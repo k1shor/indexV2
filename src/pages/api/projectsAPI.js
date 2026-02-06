@@ -17,6 +17,17 @@ export async function getAllProjects() {
     }
 }
 
+export async function getProjectDetails(id) {
+    try {
+        const res = await fetch(`${API}/projects/id/${id}`);
+        if (!res.ok) throw new Error("Failed to fetch project details");
+        return await res.json();
+    } catch (error) {
+        console.error("getAllProjects:", error);
+        return [];
+    }
+}
+
 /**
  * Fetch single project by slug
  */

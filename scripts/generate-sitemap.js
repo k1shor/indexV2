@@ -41,14 +41,14 @@ async function fetchCareers() {
 }
 
 async function fetchServices() {
-  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:5000';
+  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:5000' ;
   try {
     const res = await fetch(`${apiBase}/services`); // Adjust endpoint to yours
     if (!res.ok) return [];
     const list = await res.json();
     return list.map(c => (c.slug || c._id || c.id)).filter(Boolean);
   } catch (e) {
-    console.warn('fetchCareers failed:', e.message);
+    console.warn('fetch services failed:', e.message);
     return [];
   }
 }
@@ -60,7 +60,7 @@ async function fetchProjects() {
     const list = await res.json();
     return list.map(c => (c.slug || c._id || c.id)).filter(Boolean);
   } catch (e) {
-    console.warn('fetchCareers failed:', e.message);
+    console.warn('fetch projects failed:', e.message);
     return [];
   }
 }
