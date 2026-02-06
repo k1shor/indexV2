@@ -6,7 +6,7 @@ import { API } from "@/consts";
 export const getAllServices = async () => {
   try {
     const res = await fetch(`${API}/services`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch services");
+    if (!res.ok) throw new Error(res.error);
     return await res.json();
   } catch (error) {
     console.error("getAllServices error:", error);
@@ -17,7 +17,7 @@ export const getAllServices = async () => {
 export const getServiceById = async (id) => {
   try {
     const res = await fetch(`${API}/services/${id}`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch service");
+    if (!res.ok) throw new Error(res.error);
     return await res.json();
   } catch (error) {
     console.error("getServiceById error:", error);
@@ -36,7 +36,7 @@ export const createService = async (data) => {
       },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error("Failed to create service");
+    if (!res.ok) throw new Error(res.error);
     return await res.json();
   } catch (error) {
     console.error("createService error:", error);
@@ -55,7 +55,7 @@ export const updateService = async (id, data) => {
       },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error("Failed to update service");
+    if (!res.ok) throw new Error(res.error);
     return await res.json();
   } catch (error) {
     console.error("updateService error:", error);
@@ -72,7 +72,7 @@ export const deleteService = async (id) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    if (!res.ok) throw new Error("Failed to delete service");
+    if (!res.ok) throw new Error(res.error);
     return await res.json();
   } catch (error) {
     console.error("deleteService error:", error);
