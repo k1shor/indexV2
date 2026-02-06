@@ -7,6 +7,7 @@ import Head from "next/head";
 import { getReasonsforIndex, getSettings } from "./api/settingsAPI";
 import { isAuthenticated } from "./api/userApi";
 import { getAbout } from "./api/aboutAPI";
+import { useRouter } from "next/navigation";
 
 const API = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -15,6 +16,8 @@ export default function Home() {
   const [ready, setReady] = useState(false);
   const [about, setAbout] = useState({});
   const [reasons, setReasons] = useState([]);
+
+  const router = useRouter()
 
   const connectNow = (event) => {
     event.preventDefault();

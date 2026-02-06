@@ -7,9 +7,12 @@ export const getAbout = () => {
 }
 
 export const addAbout = (about) => {
+    const { token } = JSON.parse(localStorage.getItem('auth'))
+
     return fetch(`${API}/about/add`, {
         method: "POST",
         headers: {
+            Authorization: `Bearer ${token}`
         },
         body: about
     })
@@ -18,9 +21,11 @@ export const addAbout = (about) => {
 }
 
 export const updateAbout = (about) => {
+    const { token } = JSON.parse(localStorage.getItem('auth'))
     return fetch(`${API}/about/update`, {
         method: "PUT",
         headers: {
+            Authorization: `Bearer ${token}`
         },
         body: about
     })

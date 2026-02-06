@@ -22,8 +22,13 @@ export const fetchBlogById = async (id) => {
 };
 
 export const createBlog = async (formData) => {
+  const { token } = JSON.parse(localStorage.getItem("auth"));
+
   const res = await fetch(BASE_URL, {
     method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
     body: formData,
   });
   if (!res.ok) throw new Error(res.error);
@@ -31,8 +36,13 @@ export const createBlog = async (formData) => {
 };
 
 export const updateBlog = async (id, formData) => {
+  const { token } = JSON.parse(localStorage.getItem("auth"));
+
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
     body: formData,
   });
   if (!res.ok) throw new Error("Failed to update blog");
@@ -40,8 +50,13 @@ export const updateBlog = async (id, formData) => {
 };
 
 export const deleteBlog = async (id) => {
+  const { token } = JSON.parse(localStorage.getItem("auth"));
+
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
   });
   if (!res.ok) throw new Error("Failed to delete blog");
   return res.json();

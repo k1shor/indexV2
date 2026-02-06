@@ -1,16 +1,30 @@
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/reasons";
 
+
 // ✅ Get all reasons
 export const getReasons = async () => {
-  const res = await fetch(BASE_URL);
+  const { token } = JSON.parse(localStorage.getItem("auth"));
+
+  const res = await fetch(BASE_URL,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   if (!res.ok) throw new Error("Failed to fetch reasons");
   return res.json();
 };
 
 // ✅ Create a reason
 export const createReason = async (formData) => {
+  const { token } = JSON.parse(localStorage.getItem("auth"));
+
   const res = await fetch(BASE_URL, {
     method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     body: formData,
   });
   if (!res.ok) throw new Error("Failed to create reason");
@@ -19,8 +33,13 @@ export const createReason = async (formData) => {
 
 // ✅ Update a reason
 export const updateReason = async (id, formData) => {
+  const { token } = JSON.parse(localStorage.getItem("auth"));
+
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     body: formData,
   });
   if (!res.ok) throw new Error("Failed to update reason");
@@ -29,8 +48,13 @@ export const updateReason = async (id, formData) => {
 
 // ✅ Delete a reason
 export const deleteReason = async (id) => {
+  const { token } = JSON.parse(localStorage.getItem("auth"));
+
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
   if (!res.ok) throw new Error("Failed to delete reason");
   return res.json();

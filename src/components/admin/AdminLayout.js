@@ -34,6 +34,7 @@ export default function AdminLayout({ children }) {
     { name: "Projects Section", href: "/admin/projects", icon: <FaProjectDiagram /> },
     { name: "Career Section", href: "/admin/careers", icon: <FaBriefcase /> },
     { name: "Blogs", href: "/admin/blogs", icon: <FaChartBar /> },
+    { name: "Go to Website", href: "/", icon: <FaHome/>}
   ];
 
   // 🟥 LOGOUT HANDLER — Clears cookies + localStorage + redirects

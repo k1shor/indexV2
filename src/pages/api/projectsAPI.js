@@ -47,7 +47,7 @@ export async function getProjectBySlug(slug) {
  */
 export async function createProject(formData) {
     try {
-        const token = localStorage.getItem("token");
+        const { token } = JSON.parse(localStorage.getItem("auth"));
 
         const res = await fetch(`${API}/projects`, {
             method: "POST",

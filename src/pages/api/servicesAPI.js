@@ -27,7 +27,7 @@ export const getServiceById = async (id) => {
 
 export const createService = async (data) => {
   try {
-    const token = localStorage.getItem("token");
+    const {token} = JSON.parse(localStorage.getItem("auth"));
     const res = await fetch(`${API}/services`, {
       method: "POST",
       headers: {
@@ -46,7 +46,7 @@ export const createService = async (data) => {
 
 export const updateService = async (id, data) => {
   try {
-    const token = localStorage.getItem("token");
+    const {token} = JSON.parse(localStorage.getItem("auth"));
     const res = await fetch(`${API}/services/${id}`, {
       method: "PUT",
       headers: {
@@ -65,7 +65,7 @@ export const updateService = async (id, data) => {
 
 export const deleteService = async (id) => {
   try {
-    const token = localStorage.getItem("token");
+    const {token} = JSON.parse(localStorage.getItem("auth"));
     const res = await fetch(`${API}/services/${id}`, {
       method: "DELETE",
       headers: {
