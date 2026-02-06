@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Block admin area
+Disallow: /admin/
+
+Sitemap: https://indexithub.com/sitemap.xml
