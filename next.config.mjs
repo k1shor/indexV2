@@ -10,24 +10,24 @@ const nextConfig = {
         headers: [
           {
             key: "X-Content-Type-Options",
-            value: "nosniff"
+            value: "nosniff",
           },
           {
             key: "X-Frame-Options",
-            value: "DENY"
+            value: "DENY",
           },
           {
             key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin"
+            value: "strict-origin-when-cross-origin",
           },
           {
             key: "Content-Security-Policy",
-            value: "upgrade-insecure-requests"
-          }
-        ]
-      }
+            value: "upgrade-insecure-requests",
+          },
+        ],
+      },
     ];
-  }
+  },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
