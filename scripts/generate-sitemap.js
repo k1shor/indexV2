@@ -14,7 +14,7 @@ function isPageFile(name) {
 // ------------- Customize these fetchers for your API -------------
 // They should return arrays of slugs/ids for dynamic routes.
 async function fetchBlogs() {
-  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:5000';
+  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:5000/api';
   try {
     const res = await fetch(`${apiBase}/blogs`); // Adjust endpoint to yours
     if (!res.ok) return [];
@@ -28,7 +28,7 @@ async function fetchBlogs() {
 }
 
 async function fetchCareers() {
-  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:5000';
+  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:5000/api';
   try {
     const res = await fetch(`${apiBase}/careers`); // Adjust endpoint to yours
     if (!res.ok) return [];
@@ -41,7 +41,7 @@ async function fetchCareers() {
 }
 
 async function fetchServices() {
-  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:5000' ;
+  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:5000/api' ;
   try {
     const res = await fetch(`${apiBase}/services`); // Adjust endpoint to yours
     if (!res.ok) return [];
@@ -53,7 +53,7 @@ async function fetchServices() {
   }
 }
 async function fetchProjects() {
-  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:5000';
+  const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:5000/api';
   try {
     const res = await fetch(`${apiBase}/projects`); // Adjust endpoint to yours
     if (!res.ok) return [];
