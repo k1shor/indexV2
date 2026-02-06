@@ -1,0 +1,26 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "index-v2-c23mkwa83-k1shors-projects.vercel.app"
+        }
+      ],
+      "destination": "https://indexithub.com/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.indexithub.com"
+        }
+      ],
+      "destination": "https://indexithub.com/$1",
+      "permanent": true
+    }
+  ]
+}

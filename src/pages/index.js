@@ -105,6 +105,8 @@ export default function Home() {
   return (
     <>
       <Head>
+          <link rel="canonical" href={`https://yourdomain.com${router.asPath}`} />
+
         <title>Index IT Hub | Software Development Company</title>
         <meta
           name="description"
@@ -200,9 +202,8 @@ export default function Home() {
           {reasons.map((r, i) => (
             <div
               key={i}
-              className={`px-10 md:px-36 flex flex-col md:flex-row ${
-                i % 2 === 1 ? "md:flex-row-reverse" : ""
-              } items-center gap-8`}
+              className={`px-10 md:px-36 flex flex-col md:flex-row ${i % 2 === 1 ? "md:flex-row-reverse" : ""
+                } items-center gap-8`}
               data-aos="fade-up"
             >
               <div className="md:w-2/5 h-60 overflow-hidden rounded-2xl shadow-lg">

@@ -18,6 +18,9 @@ const poppins = myfont({
 export default function App({ Component, pageProps }) {
   const router = useRouter();
 
+  const canonicalUrl = `https://indexithub.com${router.asPath === "/" ? "" : router.asPath}`;
+
+
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -51,6 +54,9 @@ export default function App({ Component, pageProps }) {
 
   return (
     <ThemeProvider>
+      <Head>
+        <link rel="canonical" href={canonicalUrl} />
+      </Head>
       <main className={poppins.className}>
         {isAdmin ? (
           <AdminLayout>

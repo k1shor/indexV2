@@ -26,7 +26,7 @@ export const createBlog = async (formData) => {
     method: "POST",
     body: formData,
   });
-  if (!res.ok) throw new Error("Failed to create blog");
+  if (!res.ok) throw new Error(res.error);
   return res.json();
 };
 
