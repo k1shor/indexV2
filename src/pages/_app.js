@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import AdminLayout from "@/components/admin/AdminLayout";
 import Layout from "@/components/Layout";
 import { ThemeProvider } from "@/components/theme-provider";
+import Head from "next/head";
 
 const poppins = myfont({
   subsets: ["latin"],
