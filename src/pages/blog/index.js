@@ -92,7 +92,7 @@ export default function BlogPage() {
           {
           blogs.length > 0 ?
           blogs.map((blog, index) => {
-            const imgUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/public/uploads/${blog.image}`;
+            const imgUrl = `${blog.image}`;
 
             return (
               <Link

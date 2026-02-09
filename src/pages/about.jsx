@@ -71,7 +71,7 @@ const AboutPage = () => {
         <meta property="og:url" content="https://yourdomain.com/about" />
         <meta
           property="og:image"
-          content={`${API}/${about.image || "default-about.jpg"}`}
+          content={`${about.image || "default-about.jpg"}`}
         />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
@@ -127,7 +127,7 @@ const AboutPage = () => {
               data-aos-duration="2000"
             >
               <img
-                src={`${API}/${about.image}`}
+                src={`${about.image}`}
                 alt="About Index IT Hub"
                 className="p-10 w-full h-full object-cover rounded-lg shadow-md dark:shadow-gray-700 dark:rounded-full"
               />

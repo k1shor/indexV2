@@ -65,6 +65,7 @@ export default function Home() {
   useEffect(() => {
     Aos.init({ duration: 800, easing: "ease-in-out", once: true });
     getAbout().then((data) => {
+      console.log(data)
       if (!data.error) {
         setAbout(data);
         getReasonsforIndex().then((data) => {
@@ -187,7 +188,7 @@ export default function Home() {
 
           <div data-aos="fade-left" className="md:w-1/2 flex justify-center">
             <img
-              src={`${API}/${about.image}`}
+              src={`${about.image}`}
               alt="About Index IT Hub"
               className="w-96 h-96 object-cover rounded-full shadow-lg border-4 border-blue-300 dark:border-blue-700"
             />
@@ -211,7 +212,7 @@ export default function Home() {
             >
               <div className="md:w-2/5 h-60 overflow-hidden rounded-2xl shadow-lg">
                 <img
-                  src={`${API}${r.reason_image}`}
+                  src={`${r.reason_image}`}
                   alt="Service"
                   className="w-full h-full object-cover"
                 />
