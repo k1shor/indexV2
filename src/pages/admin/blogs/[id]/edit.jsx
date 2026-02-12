@@ -97,7 +97,7 @@ export default function EditBlogPage() {
       );
 
       if (payload.image) {
-        const imgUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/public/uploads/${payload.image}`;
+        const imgUrl = payload.image;
         setExistingImage(payload.image);
         setPreview(imgUrl);
       }

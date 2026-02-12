@@ -134,7 +134,7 @@ export default function AdminBlogList() {
                   >
                     <td className="px-4 py-3">
                       <img
-                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/public/uploads/${b.image}`}
+                        src={b.image}
                         alt=""
                         className="w-20 h-12 object-cover rounded-md border border-gray-300 dark:border-gray-700"
                       />
