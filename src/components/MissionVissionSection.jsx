@@ -1,6 +1,20 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import {
+  BarChart3,
+  CheckCircle2,
+  Code2,
+  Globe2,
+  Handshake,
+  Lightbulb,
+  Megaphone,
+  Palette,
+  Rocket,
+  Search,
+  Sparkles,
+  TrendingUp,
+} from "lucide-react";
 import { getMissionVision } from "@/pages/api/siteContentAPI";
 
 const DEFAULT_CONTENT = {
@@ -27,6 +41,23 @@ const DEFAULT_CONTENT = {
     ],
   },
 };
+
+const ICONS = {
+  code: Code2,
+  ux: Palette,
+  seo: Search,
+  marketing: Megaphone,
+  trust: Handshake,
+  global: Globe2,
+  innovation: Lightbulb,
+  growth: TrendingUp,
+  impact: Rocket,
+};
+
+function ItemIcon({ name }) {
+  const Icon = ICONS[name] || CheckCircle2;
+  return <Icon className="h-4 w-4" aria-hidden="true" />;
+}
 
 export default function MissionVissionSection() {
   const [content, setContent] = useState(DEFAULT_CONTENT);
@@ -62,7 +93,7 @@ export default function MissionVissionSection() {
           });
         }
       } catch (e) {
-        // keep defaults if API fails
+        // Keep defaults if API content is unavailable.
       } finally {
         if (!ignore) setLoading(false);
       }
@@ -95,58 +126,67 @@ export default function MissionVissionSection() {
     : DEFAULT_CONTENT.vision.items;
 
   return (
-    <section className="py-16 px-6 md:px-20 bg-gray-50 dark:bg-[#0b1624]">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#13294b] dark:text-white">
+    <section className="bg-slate-50 px-6 py-20 dark:bg-[#0b1624] lg:py-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="mx-auto mb-12 max-w-3xl text-center">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.26em] text-[#78a6f2]">
+            Purpose
+          </p>
+          <h2 className="text-3xl font-extrabold leading-tight text-[#1E3A8A] dark:text-white md:text-5xl">
             {heading}
           </h2>
 
-          <p className="mt-4 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300">
             {intro}
           </p>
 
           {loading && (
-            <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-              Loading content…
+            <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+              Loading content...
             </p>
           )}
         </div>
 
-        {/* Cards */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Mission */}
-          <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow border border-gray-200 dark:border-gray-700 transition hover:-translate-y-1 hover:shadow-lg">
-            <h3 className="text-2xl font-bold mb-6 text-[#13294b] dark:text-white">
-              {missionTitle}
-            </h3>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-lg border border-slate-200 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
+            <div className="mb-7 flex items-center gap-4">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-[#78a6f2]/15 text-[#78a6f2] dark:bg-[#78a6f2]/20 dark:text-[#7ddfff]">
+                <BarChart3 className="h-6 w-6" aria-hidden="true" />
+              </span>
+              <h3 className="text-2xl font-bold text-[#1E3A8A] dark:text-white">
+                {missionTitle}
+              </h3>
+            </div>
 
-            <ul className="space-y-4 text-gray-700 dark:text-gray-300">
+            <ul className="space-y-4 text-slate-700 dark:text-slate-300">
               {missionItems.map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
-                  <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
-                    ✓
+                  <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#78a6f2]/15 text-[#78a6f2] dark:bg-[#78a6f2]/20 dark:text-[#7ddfff]">
+                    <ItemIcon name={item.icon} />
                   </span>
-                  <span>{item.text}</span>
+                  <span className="leading-7">{item.text}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Vision */}
-          <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow border border-gray-200 dark:border-gray-700 transition hover:-translate-y-1 hover:shadow-lg">
-            <h3 className="text-2xl font-bold mb-6 text-[#13294b] dark:text-white">
-              {visionTitle}
-            </h3>
+          <div className="rounded-lg border border-slate-200 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
+            <div className="mb-7 flex items-center gap-4">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-[#78a6f2]/15 text-[#78a6f2] dark:bg-[#78a6f2]/20 dark:text-[#7ddfff]">
+                <Sparkles className="h-6 w-6" aria-hidden="true" />
+              </span>
+              <h3 className="text-2xl font-bold text-[#1E3A8A] dark:text-white">
+                {visionTitle}
+              </h3>
+            </div>
 
-            <ul className="space-y-4 text-gray-700 dark:text-gray-300">
+            <ul className="space-y-4 text-slate-700 dark:text-slate-300">
               {visionItems.map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
-                  <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
-                    ✓
+                  <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#78a6f2]/15 text-[#78a6f2] dark:bg-[#78a6f2]/20 dark:text-[#7ddfff]">
+                    <ItemIcon name={item.icon} />
                   </span>
-                  <span>{item.text}</span>
+                  <span className="leading-7">{item.text}</span>
                 </li>
               ))}
             </ul>

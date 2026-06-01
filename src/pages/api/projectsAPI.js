@@ -1,101 +1,100 @@
-// services/projectAPI.js
-// const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
 import { API } from "@/consts";
 
-/**
- * Fetch all projects
- */
-export async function getAllProjects() {
+const getToken = () => {
+  if (typeof window === "undefined") return "";
+
+  const auth = localStorage.getItem("auth");
+  if (auth) {
     try {
-        const res = await fetch(`${API}/projects`);
-        if (!res.ok) throw new Error("Failed to fetch projects");
-        return await res.json();
-    } catch (error) {
-        console.error("getAllProjects:", error);
-        return [];
+      return JSON.parse(auth)?.token || "";
+    } catch {
+      return "";
     }
+  }
+
+  return localStorage.getItem("token") || "";
+};
+
+const getAuthHeaders = () => {
+  const token = getToken();
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+};
+
+const parseJson = async (res) => {
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error || data.message || "Request failed");
+  }
+  return data;
+};
+
+const formDataToObject = (payload) => {
+  if (typeof FormData === "undefined" || !(payload instanceof FormData)) {
+    return payload;
+  }
+
+  const output = {};
+  payload.forEach((value, key) => {
+    if (typeof File !== "undefined" && value instanceof File) return;
+    output[key] = value;
+  });
+  return output;
+};
+
+export async function getAllProjects() {
+  const res = await fetch(`${API}/projects`);
+  return parseJson(res);
+}
+
+export async function getAdminProjects() {
+  const res = await fetch(`${API}/projects/admin/all`, {
+    headers: getAuthHeaders(),
+  });
+
+  return parseJson(res);
 }
 
 export async function getProjectDetails(id) {
-    try {
-        const res = await fetch(`${API}/projects/id/${id}`);
-        if (!res.ok) throw new Error("Failed to fetch project details");
-        return await res.json();
-    } catch (error) {
-        console.error("getAllProjects:", error);
-        return [];
-    }
+  const res = await fetch(`${API}/projects/id/${id}`, {
+    headers: getAuthHeaders(),
+  });
+
+  return parseJson(res);
 }
 
-/**
- * Fetch single project by slug
- */
 export async function getProjectBySlug(slug) {
-    try {
-        const res = await fetch(`${API}/projects/${slug}`);
-        if (!res.ok) throw new Error("Project not found");
-        return await res.json();
-    } catch (error) {
-        console.error("getProjectBySlug:", error);
-        return null;
-    }
+  const res = await fetch(`${API}/projects/${slug}`);
+  return parseJson(res);
 }
 
-/**
- * Create a new project (admin)
- */
-export async function createProject(formData) {
-    try {
-        const { token } = JSON.parse(localStorage.getItem("auth"));
+export async function createProject(payload) {
+  const res = await fetch(`${API}/projects`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(formDataToObject(payload)),
+  });
 
-        const res = await fetch(`${API}/projects`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-        });
-        return await res.json();
-    } catch (error) {
-        console.error("createProject:", error);
-        return { error: error.message };
-    }
+  return parseJson(res);
 }
 
-/**
- * Update existing project by ID (admin)
- */
-export async function updateProject(id, formData, token) {
-    try {
-        const res = await fetch(`${API}/projects/${id}`, {
-            method: "PUT",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-        });
-        return await res.json();
-    } catch (error) {
-        console.error("updateProject:", error);
-        return { error: error.message };
-    }
+export async function updateProject(id, payload) {
+  const res = await fetch(`${API}/projects/${id}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(formDataToObject(payload)),
+  });
+
+  return parseJson(res);
 }
 
-/**
- * Delete project by ID (admin)
- */
-export async function deleteProject(id, token) {
-    try {
-        const res = await fetch(`${API}/projects/${id}`, {
-            method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return await res.json();
-    } catch (error) {
-        console.error("deleteProject:", error);
-        return { error: error.message };
-    }
+export async function deleteProject(id) {
+  const res = await fetch(`${API}/projects/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  return parseJson(res);
 }

@@ -36,7 +36,7 @@ const Category = () => {
       title: "are you sure?",
       text: "you won't be able to revert this!",
       showCancelButton: true,
-      confirmButtonColor: "#3138D6",
+      confirmButtonColor: "#1E3A8A",
       cancelButtonColor: "#d33",
       confirmButtonText: "Delete",
       width: "35%"

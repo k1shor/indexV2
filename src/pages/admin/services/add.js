@@ -46,7 +46,7 @@ function PageContent() {
     short_description: "",
     description: "",
     image: "FaCog",
-    color: "#1D4ED8",
+    color: "#1E3A8A",
   });
 
   const [IconComponent, setIconComponent] = useState(() => FaIcons["FaCog"]);

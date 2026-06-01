@@ -16,7 +16,9 @@ import {
   FaQuestionCircle,
   FaServicestack,
   FaMoon,
-  FaSun
+  FaSun,
+  FaDatabase,
+  FaComments
 } from "react-icons/fa";
 
 export default function AdminLayout({ children }) {
@@ -27,6 +29,7 @@ export default function AdminLayout({ children }) {
   const navItems = [
     { name: "Dashboard", href: "/admin", icon: <FaHome /> },
     { name: "Users", href: "/admin/users", icon: <FaUsers /> },
+    { name: "Messages", href: "/admin/messages", icon: <FaComments /> },
     { name: "Reports", href: "/admin/reports", icon: <FaChartBar /> },
     { name: "About Page", href: "/admin/about", icon: <FaInfoCircle /> },
     { name: "Services Page", href: "/admin/services", icon: <FaServicestack /> },
@@ -34,10 +37,11 @@ export default function AdminLayout({ children }) {
     { name: "Projects Section", href: "/admin/projects", icon: <FaProjectDiagram /> },
     { name: "Career Section", href: "/admin/careers", icon: <FaBriefcase /> },
     { name: "Blogs", href: "/admin/blogs", icon: <FaChartBar /> },
+    { name: "Database", href: "/admin/database", icon: <FaDatabase /> },
     { name: "Go to Website", href: "/", icon: <FaHome/>}
   ];
 
-  // 🟥 LOGOUT HANDLER — Clears cookies + localStorage + redirects
+  // LOGOUT HANDLER - Clears cookies + localStorage + redirects
   const handleLogout = () => {
     // Clear localStorage
     localStorage.removeItem("token");
@@ -62,7 +66,7 @@ export default function AdminLayout({ children }) {
       <aside className="w-64 bg-white dark:bg-gray-800 shadow-md flex flex-col transition-colors duration-300 fixed min-h-screen">
 
         {/* Logo */}
-        <div className="px-6 py-4 text-2xl font-bold text-blue-600 dark:text-blue-400 border-b dark:border-gray-700">
+        <div className="px-6 py-4 text-2xl font-bold text-brand-light dark:text-blue-400 border-b dark:border-gray-700">
           Admin Panel
         </div>
 
@@ -74,8 +78,8 @@ export default function AdminLayout({ children }) {
               href={item.href}
               className={`flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-all duration-200
                 ${pathname === item.href
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600"
+                  ? "bg-brand-light text-slate-950"
+                  : "text-gray-700 dark:text-gray-200 hover:bg-[#4F96EE]/10 dark:hover:bg-gray-700 hover:text-brand-light"
                 }`}
             >
               {item.icon}

@@ -1,47 +1,126 @@
-// app/service/page.jsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
-import Aos from "aos";
-import "aos/dist/aos.css";
 import Link from "next/link";
-import * as FaIcons from "react-icons/fa";
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Bot,
+  CheckCircle2,
+  CloudCog,
+  Code2,
+  Gauge,
+  Layers3,
+  MonitorSmartphone,
+  Palette,
+  Search,
+  ShieldCheck,
+  Smartphone,
+} from "lucide-react";
 import { getAllServices } from "../api/servicesAPI";
+import PageBanner from "@/components/PageBanner";
+import { fadeUp, scaleIn, stagger, viewportOnce } from "@/components/premiumMotion";
 
-// Random Tailwind color classes
-const colors = [
-  "text-blue-600",
-  "text-green-600",
-  "text-purple-600",
-  "text-pink-600",
-  "text-orange-600",
-  "text-indigo-600",
-  "text-red-600",
-  "text-yellow-600",
+const fallbackServices = [
+  {
+    title: "Software Development",
+    slug: "software-development",
+    short_description: "Custom platforms, dashboards, portals, and business systems built for dependable operations.",
+  },
+  {
+    title: "Mobile App Development",
+    slug: "mobile-app-development",
+    short_description: "Polished mobile experiences for customers, field teams, bookings, commerce, and internal workflows.",
+  },
+  {
+    title: "Web Design and Development",
+    slug: "web-development",
+    short_description: "Fast websites and web apps with clean UX, strong content structure, and conversion-ready flows.",
+  },
+  {
+    title: "Digital Marketing",
+    slug: "digital-marketing",
+    short_description: "Campaigns, content, analytics, and growth systems that help qualified customers find you.",
+  },
+  {
+    title: "SEO Optimization",
+    slug: "seo-optimization",
+    short_description: "Technical and content SEO foundations that improve visibility, speed, structure, and discoverability.",
+  },
+  {
+    title: "IT Consultation",
+    slug: "it-consultation",
+    short_description: "Architecture, process, automation, and technology guidance before expensive decisions are made.",
+  },
 ];
 
-function getRandomColor() {
-  return colors[Math.floor(Math.random() * colors.length)];
-}
+const serviceIconPool = [
+  Code2,
+  Smartphone,
+  MonitorSmartphone,
+  CloudCog,
+  Search,
+  Palette,
+  Bot,
+  ShieldCheck,
+  Gauge,
+  Layers3,
+];
+
+const deliverySteps = [
+  ["Discover", "Clarify users, goals, constraints, systems, and the fastest route to useful value."],
+  ["Prototype", "Shape flows, interface direction, technical approach, and delivery milestones before heavy build."],
+  ["Build", "Ship in clean cycles with reviews, integrations, testing, and release readiness baked in."],
+  ["Improve", "Measure, optimize, harden, and extend the product after launch."],
+];
+
+const outcomes = [
+  "Clear scope and delivery roadmap",
+  "Secure, maintainable implementation",
+  "Launch support and iteration plan",
+];
+
+const toArray = (payload) => {
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload?.data)) return payload.data;
+  if (Array.isArray(payload?.services)) return payload.services;
+  return [];
+};
+
+const stripHtml = (value = "") =>
+  String(value).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+
+const summarize = (service) =>
+  stripHtml(service.short_description || service.description) ||
+  "Premium digital service designed around practical outcomes, clean execution, and long-term maintainability.";
 
 export default function ServicePage() {
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState(fallbackServices);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Aos.init({ duration: 800, once: true, easing: "ease-in-out" });
-
     const fetchServices = async () => {
       try {
         const data = await getAllServices();
-        setServices(data);
+        const list = toArray(data);
+        setServices(list.length ? list : fallbackServices);
       } catch (err) {
         console.error("Failed to fetch services:", err);
+        setServices(fallbackServices);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchServices();
   }, []);
+
+  const featuredServices = useMemo(
+    () => (services.length ? services : fallbackServices),
+    [services]
+  );
 
   const pageTitle = "Services | Index IT Hub";
   const pageDescription =
@@ -60,111 +139,186 @@ export default function ServicePage() {
         <meta property="og:description" content={pageDescription} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://indexithub.com/service" />
-        <meta property="og:image" content="/default-service.jpg" />
+        <meta property="og:image" content="/indexithub-logo.svg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
-        <meta name="twitter:image" content="/default-service.jpg" />
       </Head>
 
-      <div className="lfooter pb-20 bg-white dark:bg-black text-gray-900 dark:text-gray-200 transition-colors duration-300">
+      <main className="bg-white text-slate-950 dark:bg-[#0d1a2b] dark:text-white">
+        <PageBanner
+          eyebrow="Strategy, design, engineering, and scale"
+          title="Our Services"
+          description="Explore focused digital services for software products, websites, mobile experiences, automation, growth, and long-term support."
+          breadcrumbs={[{ label: "Home", href: "/" }, { label: "Services" }]}
+          actionHref="#service-cards"
+          actionLabel="View Services"
+        />
 
-        {/* Banner Section */}
-        <div
-          className="
-            contact-img text-center p-16
-            bg-gray-100 dark:bg-gray-900
-            transition-colors duration-300
-          "
-          data-aos="zoom-in"
-          data-aos-duration="2000"
-        >
-          <h1 className="career lg:text-4xl text-2xl font-bold text-[#13294b] dark:text-white">
-            Our Services
-          </h1>
-
-          <div
-            className="
-              flex justify-center p-3 mt-3
-              text-[#13294b] dark:text-gray-200
-              bg-[#ffffff50] dark:bg-gray-700/40 
-              backdrop-blur-sm rounded-md
-              transition-colors
-            "
-          >
-            <a
-              href="/"
-              className="pr-2 hover:text-blue-600 dark:hover:text-blue-400"
+        <section id="service-cards" className="scroll-mt-28 px-6 pb-16 pt-8 sm:px-10 sm:pb-20 sm:pt-10 lg:px-16 lg:pb-24 lg:pt-12">
+          <div className="mx-auto max-w-7xl">
+            <motion.div
+              variants={stagger(0.1)}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end lg:gap-12"
             >
-              Home
-            </a>
-            /
-            <span className="pl-2">Services</span>
+              <div>
+                <motion.p variants={fadeUp} className="text-sm font-bold uppercase tracking-[0.18em] text-brand-light">
+                  Service portfolio
+                </motion.p>
+                <motion.h2 variants={fadeUp} className="mt-3 text-3xl font-extrabold tracking-tight text-[#1E3A8A] dark:text-white sm:text-5xl">
+                  Practical digital capabilities, packaged for momentum.
+                </motion.h2>
+              </div>
+              <motion.p variants={fadeUp} className="text-lg leading-8 text-slate-600 dark:text-slate-300">
+                Every engagement is shaped around the same promise: clear thinking, clean delivery, and software your team can keep improving after launch.
+              </motion.p>
+            </motion.div>
+
+            <motion.div
+              variants={stagger(0.1)}
+              initial="hidden"
+              animate="show"
+              className="mt-9 grid gap-6 md:grid-cols-2 xl:grid-cols-3"
+            >
+              {featuredServices.map((service, index) => {
+                const Icon = serviceIconPool[index % serviceIconPool.length];
+                const href = service.slug ? `/service/${service.slug}` : "/service";
+
+                return (
+                  <motion.div
+                    key={service._id || service.slug || service.title || `service-${index}`}
+                    variants={scaleIn}
+                    whileHover={{ y: -6 }}
+                  >
+                    <Link
+                      href={href}
+                      className="group flex min-h-[280px] flex-col rounded-lg border border-slate-200 bg-white p-7 shadow-sm transition hover:border-brand-light hover:shadow-xl hover:shadow-slate-200/70 dark:border-white/10 dark:bg-white/[0.04] dark:hover:shadow-none"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#78a6f2]/10 text-brand-light">
+                          <Icon className="h-6 w-6" />
+                        </div>
+                        <span className="rounded-full border border-slate-200 px-3 py-1 text-xs font-bold text-slate-500 dark:border-white/10 dark:text-slate-400">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                      </div>
+
+                      <h3 className="mt-9 text-2xl font-bold text-[#1E3A8A] dark:text-white">
+                        {service.title}
+                      </h3>
+                      <p className="mt-3 flex-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                        {summarize(service)}
+                      </p>
+
+                      <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-brand-light">
+                        Explore service
+                        <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                      </span>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+
+            {loading && (
+              <p className="mt-5 text-sm text-slate-500 dark:text-slate-400">
+                Loading the latest service list...
+              </p>
+            )}
           </div>
-        </div>
+        </section>
 
-        {/* Services Grid Section */}
-        <div className="body_mid w-full h-auto md:p-9 lg:flex lg:flex-wrap lg:justify-between items-start px-6">
-          {services.map((svc, index) => {
-            const Icon = FaIcons[svc.image] || FaIcons.FaCogs;
-            const colorClass = getRandomColor();
+        <section className="bg-slate-50 px-6 py-16 dark:bg-[#0b1624] sm:px-10 sm:py-20 lg:px-16 lg:py-24">
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-14">
+            <motion.div
+              variants={stagger(0.1)}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+            >
+              <motion.p variants={fadeUp} className="text-sm font-bold uppercase tracking-[0.18em] text-brand-light">
+                How we work
+              </motion.p>
+              <motion.h2 variants={fadeUp} className="mt-3 text-3xl font-extrabold tracking-tight text-[#1E3A8A] dark:text-white sm:text-5xl">
+                Senior delivery rhythm without the ceremony overload.
+              </motion.h2>
+              <motion.p variants={fadeUp} className="mt-5 text-lg leading-8 text-slate-600 dark:text-slate-300">
+                We keep the process clear enough for stakeholders and detailed enough for engineering. The result is less ambiguity, fewer surprises, and faster decisions.
+              </motion.p>
 
-            return (
-              <Link
-                key={svc.slug}
-                href={`/service/${svc.slug}`}
-                className="
-                  lg:w-[30%] md:w-full sm:w-full 
-                  bg-white dark:bg-gray-800 
-                  m-3 p-8 rounded-xl 
-                  shadow-lg dark:shadow-gray-900 
-                  hover:shadow-2xl dark:hover:shadow-gray-700
-                  transform hover:-translate-y-2 
-                  transition duration-300 ease-in-out 
-                  flex flex-col items-center text-center
-                  text-gray-900 dark:text-gray-200
-                "
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-              >
-                <Icon className={`${colorClass} text-4xl mb-4`} />
-                <h2 className="text-2xl font-semibold mb-2">{svc.title}</h2>
-                <p className="text-gray-700 dark:text-gray-300">
-                  {svc.short_description}
-                </p>
-              </Link>
-            );
-          })}
-        </div>
+              <motion.div variants={stagger(0.08)} className="mt-9 space-y-4">
+                {outcomes.map((item) => (
+                  <motion.div key={item} variants={fadeUp} className="flex items-center gap-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    <CheckCircle2 className="h-5 w-5 text-brand-light" />
+                    {item}
+                  </motion.div>
+                ))}
+              </motion.div>
+            </motion.div>
 
-        {/* Call To Action */}
-        <div
-          className="mt-16 text-center transition-colors"
-          data-aos="fade-up"
-          data-aos-delay={services.length * 100 + 200}
-        >
-          <h2 className="text-2xl font-bold mb-4 dark:text-white">
-            Ready to Transform Your Business?
-          </h2>
+            <motion.div
+              variants={stagger(0.1)}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              className="grid gap-5 sm:grid-cols-2"
+            >
+              {deliverySteps.map(([title, copy], index) => (
+                <motion.div
+                  key={title}
+                  variants={scaleIn}
+                  whileHover={{ y: -6 }}
+                  className="rounded-lg border border-slate-200 bg-white p-7 dark:border-white/10 dark:bg-white/[0.04]"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#13294b] text-sm font-bold text-white dark:bg-brand-light dark:text-slate-950">
+                    {index + 1}
+                  </div>
+                  <h3 className="mt-5 text-xl font-bold text-[#1E3A8A] dark:text-white">
+                    {title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    {copy}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
 
-          <p className="text-gray-700 dark:text-gray-300 mb-6">
-            Let’s discuss how we can help you achieve your digital goals with our expert services.
-          </p>
-
-          <a
-            href="/contact"
-            className="
-              inline-block px-8 py-3 
-              bg-blue-600 dark:bg-blue-700 
-              text-white font-medium rounded-lg shadow-md 
-              hover:bg-blue-700 dark:hover:bg-blue-800 
-              transition
-            "
+        <section className="px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            className="mx-auto grid max-w-7xl gap-9 rounded-lg bg-[linear-gradient(135deg,#0b1526_0%,#13294b_48%,#2f6faa_100%)] p-8 text-white shadow-2xl shadow-slate-300/60 dark:shadow-none sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-12 lg:p-12"
           >
-            Get Started
-          </a>
-        </div>
-      </div>
+            <div>
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-slate-200">
+                <BadgeCheck className="h-4 w-4 text-brand-light" />
+                Built for launch and long-term ownership
+              </div>
+              <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+                Have a service need that does not fit neatly into a box?
+              </h2>
+              <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-200">
+                Bring the messy version. We will help define the scope, technical path, and first valuable release.
+              </p>
+            </div>
+
+            <Link
+              href="/contact"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-brand-light px-6 text-sm font-bold text-slate-50 transition hover:bg-[#4F96EE]"
+            >
+              Start a Consultation
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
+        </section>
+      </main>
     </>
   );
 }

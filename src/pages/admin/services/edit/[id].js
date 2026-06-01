@@ -32,7 +32,7 @@ function PageContent() {
     short_description: "",
     description: "",
     image: "FaCog",
-    color: "#1D4ED8",
+    color: "#1E3A8A",
   });
 
   const [IconComponent, setIconComponent] = useState(() => FaIcons["FaCog"]);
@@ -52,7 +52,7 @@ function PageContent() {
           short_description: data.short_description || "",
           description: data.description || "",
           image: data.image || "FaCog",
-          color: data.color || "#1D4ED8",
+          color: data.color || "#1E3A8A",
         });
       } catch (err) {
         setError(err.message || "Failed to fetch service.");

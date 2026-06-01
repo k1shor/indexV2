@@ -18,7 +18,8 @@ async function fetchBlogs() {
   try {
     const res = await fetch(`${apiBase}/blogs`); // Adjust endpoint to yours
     if (!res.ok) return [];
-    const list = await res.json();
+    const payload = await res.json();
+    const list = Array.isArray(payload) ? payload : (payload.data || payload.blogs || []);
     // adjust mapping to your blog object shape (id or slug)
     return list.map(b => (b.slug || b._id || b.id)).filter(Boolean);
   } catch (e) {
@@ -32,7 +33,8 @@ async function fetchCareers() {
   try {
     const res = await fetch(`${apiBase}/careers`); // Adjust endpoint to yours
     if (!res.ok) return [];
-    const list = await res.json();
+    const payload = await res.json();
+    const list = Array.isArray(payload) ? payload : (payload.data || payload.careers || []);
     return list.map(c => (c.slug || c._id || c.id)).filter(Boolean);
   } catch (e) {
     console.warn('fetchCareers failed:', e.message);
@@ -45,7 +47,8 @@ async function fetchServices() {
   try {
     const res = await fetch(`${apiBase}/services`); // Adjust endpoint to yours
     if (!res.ok) return [];
-    const list = await res.json();
+    const payload = await res.json();
+    const list = Array.isArray(payload) ? payload : (payload.data || payload.services || []);
     return list.map(c => (c.slug || c._id || c.id)).filter(Boolean);
   } catch (e) {
     console.warn('fetch services failed:', e.message);
@@ -57,7 +60,8 @@ async function fetchProjects() {
   try {
     const res = await fetch(`${apiBase}/projects`); // Adjust endpoint to yours
     if (!res.ok) return [];
-    const list = await res.json();
+    const payload = await res.json();
+    const list = Array.isArray(payload) ? payload : (payload.data || payload.projects || []);
     return list.map(c => (c.slug || c._id || c.id)).filter(Boolean);
   } catch (e) {
     console.warn('fetch projects failed:', e.message);
@@ -116,15 +120,13 @@ async function generate() {
 
   // 2. dynamic routes from API
   const blogs = await fetchBlogs();
-  const careers = await fetchCareers();
   const services = await fetchServices();
   const projects = await fetchProjects();
 
   const dynamicRoutes = [
-    ...blogs.map(s => `/blogs/${s}`),
-    ...careers.map(s => `/careers/${s}`),
-    ...services.map(s => `/services/${s}`),
-    ...projects.map(s => `/projects/${s}`)
+    ...blogs.map(s => `/blog/${s}`),
+    ...services.map(s => `/service/${s}`),
+    ...projects.map(s => `/project/${s}`)
   ];
 
   // union, sort

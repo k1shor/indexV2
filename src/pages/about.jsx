@@ -2,19 +2,131 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
-import Aos from "aos";
-import "aos/dist/aos.css";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Code2,
+  Globe2,
+  Handshake,
+  Layers3,
+  Megaphone,
+  Palette,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  UsersRound,
+  Zap,
+} from "lucide-react";
 import { getAbout } from "./api/aboutAPI";
 import { getAllUsers } from "./api/userApi";
 import MissionVisionSection from "@/components/MissionVissionSection";
-// import { getTeamMembers } from "./api/teamAPI";
 
-// If you don't have these images in /public, add them OR keep fallback only.
 const FALLBACK_TEAM_IMAGE = "/team-placeholder.png";
+const BRAND_LOGO = "/image.png";
 
-// -----------------------------
-// Small inline SVG icon set (no extra deps)
-// -----------------------------
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+const fadeLeft = {
+  hidden: { opacity: 0, x: -28 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.65, ease: "easeOut" },
+  },
+};
+
+const fadeRight = {
+  hidden: { opacity: 0, x: 28 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.65, ease: "easeOut" },
+  },
+};
+
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.94 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
+
+const stagger = (delay = 0.1) => ({
+  hidden: {},
+  show: { transition: { staggerChildren: delay } },
+});
+
+const DEFAULT_ABOUT_COPY = [
+  "<strong>Index IT Hub</strong> is a group of passionate technologists dedicated to crafting innovative solutions that drive business growth. We may be new, but our drive, skills, and commitment are anything but.",
+  "We specialize in software development, web and mobile application development, graphic design, digital marketing, IT consulting, and search engine optimization.",
+  "With a strong commitment to technical excellence and client success, we deliver customized solutions that foster growth, efficiency, and long-term sustainability.",
+  "At <strong>Index IT Hub</strong>, we are more than just a service provider. We are a trusted partner in technology and innovation, empowering organizations to navigate the complexities of the digital landscape.",
+];
+
+const WHY_US = [
+  {
+    icon: Target,
+    title: "Client-First Mindset",
+    desc: "Every decision is shaped around what helps your business move forward, not what is easiest for us.",
+  },
+  {
+    icon: Zap,
+    title: "Fast and Agile Delivery",
+    desc: "We move quickly, keep the process visible, and protect quality across every delivery stage.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Transparent Process",
+    desc: "Clear scope, honest updates, and practical guidance keep your project predictable from day one.",
+  },
+  {
+    icon: Handshake,
+    title: "Long-Term Partnership",
+    desc: "We build with the future in mind, then stay close as your product, traffic, and operations grow.",
+  },
+];
+
+const CAPABILITIES = [
+  { icon: Code2, label: "Software Development" },
+  { icon: Layers3, label: "Web and Mobile Apps" },
+  { icon: Palette, label: "UI/UX and Graphics" },
+  { icon: Search, label: "SEO Strategy" },
+  { icon: Megaphone, label: "Digital Marketing" },
+  { icon: Globe2, label: "IT Consulting" },
+];
+
+function splitCopy(text) {
+  return (text || "")
+    .split(/\r?\n|\r|\n/)
+    .map((para) => para.trim())
+    .filter(Boolean);
+}
+
+function getInitials(member) {
+  if (member?.initials) return member.initials;
+  const name = member?.name || "";
+  const initials = name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("");
+  return initials || "IT";
+}
+
 function IconLink({ href, label, children }) {
   if (!href) return null;
   return (
@@ -23,7 +135,7 @@ function IconLink({ href, label, children }) {
       aria-label={label}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#13294b] shadow-sm ring-1 ring-black/5 transition hover:scale-105 hover:bg-white dark:bg-gray-900/80 dark:text-gray-100 dark:ring-white/10"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-[#1E3A8A] shadow-sm ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:bg-white dark:bg-gray-950/90 dark:text-gray-100 dark:ring-white/10"
     >
       {children}
     </a>
@@ -62,94 +174,124 @@ function IconWebsite() {
   );
 }
 
-// -----------------------------
-// Org chart (simple, responsive)
-// -----------------------------
-function OrgChart() {
+function SectionHeading({ eyebrow, title, children, align = "center" }) {
+  const isCentered = align === "center";
   return (
-    <div className="w-full">
-      <div className="mb-6 text-center">
-        <h2 className="text-3xl font-bold text-[#13294b] dark:text-white">
-          Organizational Structure
-        </h2>
-        <p className="mt-3 text-sm md:text-base text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-          A streamlined functional structure focused on delivery quality, engineering excellence,
-          and measurable growth outcomes.
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.2 }}
+      className={isCentered ? "mx-auto mb-12 max-w-3xl text-center" : "mb-10 max-w-3xl"}
+    >
+      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.26em] text-[#78a6f2]">
+        {eyebrow}
+      </p>
+      <h2 className="text-3xl font-extrabold leading-tight text-[#1E3A8A] dark:text-white md:text-5xl">
+        {title}
+      </h2>
+      {children && (
+        <p className="mt-5 text-base leading-8 text-slate-600 dark:text-slate-300">
+          {children}
         </p>
-      </div>
-
-      {/* Nodes */}
-      <div className="relative mx-auto max-w-6xl">
-        {/* Top */}
-        <div className="flex justify-center">
-          <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-4 shadow-sm">
-            <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-              Managing Director / Founder
-            </p>
-            <p className="mt-1 text-xs text-gray-600 dark:text-gray-300">
-              Strategy • Partnerships • Governance
-            </p>
-          </div>
-        </div>
-
-        {/* Connector */}
-        <div className="mx-auto my-4 h-10 w-px bg-gray-300 dark:bg-gray-600" />
-
-        {/* Middle row */}
-        <div className="grid gap-4 md:grid-cols-2">
-          {[
-            {
-              title: "Technical Lead",
-              sub: "Architecture • Code Quality • DevOps",
-            },
-            {
-              title: "Operations / PM",
-              sub: "Delivery • Timelines • Client Communication",
-            }
-          ].map((n) => (
-            <div
-              key={n.title}
-              className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-4 shadow-sm text-center"
-            >
-              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{n.title}</p>
-              <p className="mt-1 text-xs text-gray-600 dark:text-gray-300">{n.sub}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Connector down */}
-        <div className="mx-auto my-6 h-10 w-px bg-gray-300 dark:bg-gray-600" />
-
-        {/* Bottom row */}
-        <div className="grid gap-4 md:grid-cols-4">
-          {[
-            { title: "Frontend Developer", sub: "Next.js • React • UI" },
-            { title: "Backend Developer", sub: "Node • APIs • DB" },
-            { title: "UI UX Designer", sub: "UI/UX • Graphics" },
-            { title: "QA and Support", sub: "Maintenance • Security" },
-          ].map((n) => (
-            <div
-              key={n.title}
-              className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-4 shadow-sm text-center"
-            >
-              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{n.title}</p>
-              <p className="mt-1 text-xs text-gray-600 dark:text-gray-300">{n.sub}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+      )}
+    </motion.div>
   );
 }
 
-const AboutPage = () => {
+function OrgChart() {
+  const leadership = {
+    title: "Managing Director / Founder",
+    sub: "Strategy / Partnerships / Governance",
+  };
+
+  const management = [
+    {
+      title: "Technical Lead",
+      sub: "Architecture / Code Quality / DevOps",
+    },
+    {
+      title: "Operations / PM",
+      sub: "Delivery / Timelines / Client Communication",
+    },
+  ];
+
+  const delivery = [
+    { title: "Frontend Developer", sub: "Next.js / React / UI" },
+    { title: "Backend Developer", sub: "Node / APIs / Database" },
+    { title: "UI UX Designer", sub: "UI/UX / Graphics" },
+    { title: "QA and Support", sub: "Maintenance / Security" },
+  ];
+
+  const chartCard =
+    "rounded-lg border border-slate-200 bg-white px-6 py-4 text-center shadow-sm dark:border-white/10 dark:bg-white/[0.04]";
+
+  return (
+    <section className="bg-white py-20 dark:bg-[#0d1a2b] lg:py-24">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionHeading
+          eyebrow="How We Work"
+          title="A Lean Structure Built for Delivery"
+        >
+          Clear ownership helps every project move from strategy to design,
+          engineering, launch, and support without losing momentum.
+        </SectionHeading>
+
+        <motion.div
+          variants={stagger(0.08)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.1 }}
+          className="relative mx-auto max-w-6xl"
+        >
+          <motion.div variants={scaleIn} className="flex justify-center">
+            <div className={`${chartCard} min-w-[260px]`}>
+              <p className="text-sm font-semibold text-slate-950 dark:text-white">
+                {leadership.title}
+              </p>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                {leadership.sub}
+              </p>
+            </div>
+          </motion.div>
+
+          <div className="mx-auto my-4 h-10 w-px bg-slate-300 dark:bg-white/20" />
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {management.map((n) => (
+              <motion.div key={n.title} variants={scaleIn} className={chartCard}>
+                <p className="text-sm font-semibold text-slate-950 dark:text-white">
+                  {n.title}
+                </p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{n.sub}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mx-auto my-6 h-10 w-px bg-slate-300 dark:bg-white/20" />
+
+          <div className="grid gap-4 md:grid-cols-4">
+            {delivery.map((n) => (
+              <motion.div key={n.title} variants={scaleIn} className={chartCard}>
+                <p className="text-sm font-semibold text-slate-950 dark:text-white">
+                  {n.title}
+                </p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{n.sub}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+export default function AboutPage() {
   const [about, setAbout] = useState({ description: "", image: "" });
   const [team, setTeam] = useState([]);
   const [teamError, setTeamError] = useState("");
 
   useEffect(() => {
-    Aos.init({ once: true });
-
     const fetchAbout = async () => {
       try {
         const data = await getAbout();
@@ -177,20 +319,12 @@ const AboutPage = () => {
     fetchTeam();
   }, []);
 
-  const renderParagraphs = (text) => {
-    return (text || "")
-      .split(/\r?\n|\r|\n/)
-      .filter((para) => para.trim() !== "")
-      .map((para, index) => (
-        <p
-          key={index}
-          className="mb-4 lg:text-xl md:text-base text-sm text-justify text-[#13294b] dark:text-gray-200"
-          dangerouslySetInnerHTML={{ __html: para }}
-        />
-      ));
-  };
-
   const safeTeam = useMemo(() => (Array.isArray(team) ? team : []), [team]);
+  const aboutCopy = useMemo(() => {
+    const apiCopy = splitCopy(about.description);
+    return apiCopy.length > 0 ? apiCopy : DEFAULT_ABOUT_COPY;
+  }, [about.description]);
+  const storyImage = about.image || BRAND_LOGO;
 
   return (
     <>
@@ -198,148 +332,401 @@ const AboutPage = () => {
         <title>About Us | Index IT Hub</title>
         <meta
           name="description"
-          content="Learn about Index IT Hub, our mission, vision, team, and organizational structure."
+          content="Learn about Index IT Hub, our mission, vision, delivery culture, team, and organizational structure."
         />
       </Head>
 
-      <div className="bg-white dark:bg-[#0d1a2b] transition-colors duration-300">
-        {/* Banner */}
-        <div
-          className="text-center p-16 bg-gray-100 dark:bg-gray-900"
-          data-aos="zoom-in"
-          data-aos-duration="1200"
-        >
-          <h1 className="lg:text-4xl text-2xl font-bold text-[#13294b] dark:text-white">
-            About Us
-          </h1>
+      <style jsx global>{`
+        .about-grid {
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+          background-size: 48px 48px;
+        }
 
-          <div className="mt-4 flex justify-center p-3 text-[#13294b] dark:text-gray-200 bg-[#ffffff50] dark:bg-gray-700/40">
-            <a href="/" className="pr-2 hover:text-blue-600 dark:hover:text-blue-400">
-              Home
-            </a>
-            /
-            <span className="pl-2">About</span>
-          </div>
-        </div>
+        .about-shimmer {
+          background: linear-gradient(90deg, #1E3A8A 0%, #78a6f2 42%, #1E3A8A 64%, #78a6f2 100%);
+          background-size: 220% auto;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: about-shimmer 3.5s linear infinite;
+        }
 
-        {/* About content */}
-        <div className="w-full h-auto md:p-9 flex flex-col lg:flex-row lg:justify-between items-center">
-          <div
-            className="lg:w-1/2 md:w-full lg:p-12 p-8 md:p-10 text-[#13294b] dark:text-gray-200 order-2 md:order-1"
-            data-aos="zoom-in"
-            data-aos-duration="1200"
-          >
-            {renderParagraphs(about.description)}
-          </div>
+        .dark .about-shimmer,
+        .about-shimmer-on-dark {
+          background: linear-gradient(90deg, #fefefe 0%, #7ddfff 42%, #fefefe 64%, #7ddfff 100%);
+          background-size: 220% auto;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
 
-          {about.image && (
-            <div
-              className="order-1 md:order-2 lg:w-1/2 flex justify-center px-5"
-              data-aos="fade-up"
-              data-aos-duration="1200"
+        .about-copy strong {
+          color: #1E3A8A;
+          font-weight: 800;
+        }
+
+        .dark .about-copy strong {
+          color: #fefefe;
+        }
+
+        @keyframes about-shimmer {
+          0% {
+            background-position: -200% center;
+          }
+          100% {
+            background-position: 200% center;
+          }
+        }
+      `}</style>
+
+      <main className="bg-white text-slate-900 transition-colors duration-300 dark:bg-[#0d1a2b] dark:text-white">
+        <section className="relative overflow-hidden bg-[linear-gradient(135deg,#ffffff_0%,#eef6ff_48%,#dbeafe_100%)] text-slate-950 dark:bg-[linear-gradient(135deg,#0b1526_0%,#13294b_46%,#2f6faa_100%)] dark:text-white">
+          <div className="absolute inset-0 about-grid opacity-60" aria-hidden="true" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white to-transparent dark:from-[#0d1a2b]" />
+
+          <div className="relative z-10 mx-auto grid min-h-[88vh] w-full max-w-7xl items-center gap-14 px-6 pb-20 pt-32 lg:grid-cols-[1.08fr_0.92fr] lg:pb-24 lg:pt-36">
+            <motion.div variants={stagger(0.12)} initial="hidden" animate="show">
+              <motion.div
+                variants={fadeUp}
+                className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#13294b]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#1E3A8A] shadow-sm backdrop-blur dark:border-white/15 dark:bg-white/10 dark:text-blue-100"
+              >
+                <Sparkles className="h-4 w-4 text-[#7ddfff]" />
+                About Index IT Hub
+              </motion.div>
+
+              <motion.h1
+                variants={fadeUp}
+                className="max-w-4xl text-4xl font-extrabold leading-[1.05] tracking-normal md:text-6xl lg:text-7xl"
+              >
+                Fresh Vision.
+                <br />
+                <span className="about-shimmer">Real Passion.</span>
+                <br />
+                Built to Last.
+              </motion.h1>
+
+              <motion.p
+                variants={fadeUp}
+                className="mt-7 max-w-2xl text-base leading-8 text-slate-700 dark:text-blue-50/90 md:text-lg"
+              >
+                Index IT Hub is a passionate technology team helping businesses
+                launch smarter websites, scalable software, useful digital
+                experiences, and growth-focused campaigns.
+              </motion.p>
+
+              <motion.div variants={fadeUp} className="mt-10 flex flex-wrap gap-3">
+                <Link
+                  href="#who-we-are"
+                  className="inline-flex items-center gap-2 rounded-lg bg-brand-light px-6 py-3 text-sm font-bold text-slate-50 shadow-xl shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-[#4F96EE] dark:bg-white dark:text-[#1E3A8A] dark:hover:bg-blue-50"
+                >
+                  Our Story
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="#mission"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[#13294b]/20 bg-white/50 px-6 py-3 text-sm font-semibold text-[#1E3A8A] backdrop-blur transition hover:-translate-y-0.5 hover:bg-white dark:border-white/25 dark:bg-white/10 dark:text-white dark:hover:bg-white/15"
+                >
+                  Mission and Vision
+                </Link>
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 28 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.75, delay: 0.25, ease: "easeOut" }}
+              className="flex justify-center lg:justify-end"
             >
-              <img
-                src={about.image}
-                alt="About Index IT Hub"
-                className="p-10 w-full h-full object-cover rounded-lg shadow-md dark:shadow-gray-700 dark:rounded-full"
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Mission & Vision (previous bullet version + heading + paragraph) */}
-       <MissionVisionSection/>
-
-
-        {/* Team Section (API-connected + hover social icons) */}
-        {/* <div className="py-16 px-6 md:px-20">
-          <div className="max-w-6xl mx-auto text-center mb-10">
-            <h2 className="text-3xl font-bold text-[#13294b] dark:text-white">
-              Meet Our Team
-            </h2>
-            <p className="mt-3 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              A focused group of engineers, designers, and strategists committed to building
-              fast, secure, and scalable solutions.
-            </p>
-            {teamError && (
-              <p className="mt-3 text-sm text-red-600 dark:text-red-400">{teamError}</p>
-            )}
-          </div>
-
-          <div className="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {safeTeam.length > 0 ? (
-              safeTeam.map((m) => {
-                const imageSrc = m?.image || FALLBACK_TEAM_IMAGE;
-                return (
-                  <div
-                    key={m._id || `${m?.name}-${m?.initials}`}
-                    className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition"
-                    data-aos="fade-up"
+              <div className="relative w-full max-w-[420px]">
+                <div className="rounded-lg border border-white/80 bg-white/80 p-5 shadow-2xl shadow-slate-950/15 backdrop-blur-md dark:border-white/15 dark:bg-white/[0.08] dark:shadow-blue-950/30">
+                  <motion.div
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                    className="relative mx-auto aspect-square w-full max-w-[330px]"
                   >
-                    <div className="relative h-40 w-full bg-gray-100 dark:bg-gray-900">
-                      <img
-                        src={imageSrc}
-                        alt={m?.name || "Team member"}
-                        onError={(e) => (e.currentTarget.src = FALLBACK_TEAM_IMAGE)}
-                        className="h-40 w-full object-cover"
-                      />
+                    <Image
+                      src={BRAND_LOGO}
+                      alt="Index IT Hub logo"
+                      fill
+                      // width={'300'}
+                      // height={'300'}
+                      priority
+                      sizes="(max-width: 1024px) 280px, 330px"
+                      className=" object-cover shadow-2xl"
+                    />
+                  </motion.div>
+                </div>
 
-                      <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/35 transition" />
-
-                      <div className="pointer-events-auto absolute right-4 top-4 flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                        <IconLink href={m?.socials?.facebook} label="Facebook">
-                          <IconFacebook />
-                        </IconLink>
-                        <IconLink href={m?.socials?.linkedin} label="LinkedIn">
-                          <IconLinkedIn />
-                        </IconLink>
-                        <IconLink href={m?.socials?.twitter} label="Twitter / X">
-                          <IconTwitter />
-                        </IconLink>
-                        <IconLink href={m?.socials?.website} label="Website">
-                          <IconWebsite />
-                        </IconLink>
-                      </div>
-
-                      <div className="absolute left-4 bottom-4">
-                        <span className="inline-flex items-center justify-center rounded-full bg-[#13294b] text-white px-3 py-2 text-xs font-bold shadow">
-                          {m?.initials || "IT"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="p-6 text-left">
-                      <h3 className="text-lg font-bold text-[#13294b] dark:text-white">
-                        {m?.name || "Team Member"}
-                      </h3>
-                      <p className="mt-1 text-sm font-semibold text-blue-600 dark:text-blue-400">
-                        {m?.title || m?.role || "Role"}
-                      </p>
-                      {m?.bio && (
-                        <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">
-                          {m.bio}
-                        </p>
-                      )}
-                    </div>
+                <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                  <div className="rounded-lg border border-[#13294b]/10 bg-white/70 px-4 py-3 backdrop-blur dark:border-white/15 dark:bg-white/10">
+                    <p className="font-bold text-[#1E3A8A] dark:text-white">Design</p>
+                    <p className="mt-1 text-xs text-slate-600 dark:text-blue-100">Useful, clear, premium</p>
                   </div>
-                );
-              })
-            ) : (
-              <div className="col-span-full text-center text-gray-600 dark:text-gray-300">
-                No team members found.
+                  <div className="rounded-lg border border-[#13294b]/10 bg-white/70 px-4 py-3 backdrop-blur dark:border-white/15 dark:bg-white/10">
+                    <p className="font-bold text-[#1E3A8A] dark:text-white">Delivery</p>
+                    <p className="mt-1 text-xs text-slate-600 dark:text-blue-100">Fast, scalable, steady</p>
+                  </div>
+                </div>
               </div>
-            )}
+            </motion.div>
           </div>
+        </section>
+
+        <section id="who-we-are" className="bg-white py-20 dark:bg-[#0d1a2b] lg:py-24">
+          <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 lg:grid-cols-[0.94fr_1.06fr]">
+            <motion.div
+              variants={fadeLeft}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.15 }}
+              className="order-2 lg:order-1"
+            >
+              <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-2xl shadow-slate-200/70 dark:border-white/10 dark:bg-white/[0.04] dark:shadow-black/30">
+                <div className="aspect-[4/3]">
+                  <img
+                    src={storyImage}
+                    alt="Index IT Hub team and brand"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1E3A8A]/95 to-transparent px-6 pb-6 pt-16">
+                  <p className="text-sm font-semibold text-white">
+                    More than a service provider, a trusted technology partner.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              variants={stagger(0.1)}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.15 }}
+              className="order-1 lg:order-2"
+            >
+              <motion.p
+                variants={fadeUp}
+                className="mb-3 text-xs font-semibold uppercase tracking-[0.26em] text-[#78a6f2]"
+              >
+                Who We Are
+              </motion.p>
+              <motion.h2
+                variants={fadeUp}
+                className="text-3xl font-extrabold leading-tight text-[#1E3A8A] dark:text-white md:text-5xl"
+              >
+                Building the Digital Future, Together
+              </motion.h2>
+
+              <motion.div
+                variants={fadeUp}
+                className="about-copy mt-7 space-y-5 text-base leading-8 text-slate-600 dark:text-slate-300"
+              >
+                {aboutCopy.map((para, index) => (
+                  <div key={index} dangerouslySetInnerHTML={{ __html: para }} />
+                ))}
+              </motion.div>
+
+              <motion.div variants={fadeUp} className="mt-8 grid gap-3 sm:grid-cols-2">
+                {CAPABILITIES.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.label}
+                      className="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-[#1E3A8A] dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
+                    >
+                      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#78a6f2]/15 text-[#78a6f2] dark:bg-[#78a6f2]/20 dark:text-[#7ddfff]">
+                        <Icon className="h-4 w-4" />
+                      </span>
+                      {item.label}
+                    </div>
+                  );
+                })}
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        <div id="mission">
+          <MissionVisionSection />
         </div>
 
-        <div className="py-16 px-6 md:px-20 bg-gray-50 dark:bg-[#0b1624]">
-          <div className="max-w-6xl mx-auto">
-            <OrgChart />
+        <section className="bg-white py-20 dark:bg-[#0d1a2b] lg:py-24">
+          <div className="mx-auto max-w-7xl px-6">
+            <SectionHeading
+              eyebrow="Why Work With Us"
+              title="What Makes Us Different"
+            >
+              We blend the energy of a new team with disciplined delivery,
+              direct communication, and practical technical choices.
+            </SectionHeading>
+
+            <motion.div
+              variants={stagger(0.12)}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.1 }}
+              className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+            >
+              {WHY_US.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={item.title}
+                    variants={scaleIn}
+                    whileHover={{ y: -6 }}
+                    className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm transition dark:border-white/10 dark:bg-white/[0.04]"
+                  >
+                    <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-[#78a6f2]/15 text-[#78a6f2] dark:bg-[#78a6f2]/20 dark:text-[#7ddfff]">
+                      <Icon className="h-6 w-6" />
+                    </div>
+                    <h3 className="text-lg font-bold text-[#1E3A8A] dark:text-white">
+                      {item.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                      {item.desc}
+                    </p>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
           </div>
-        </div> */}
-      </div>
+        </section>
+
+        {/* <section className="bg-slate-50 py-20 dark:bg-[#0b1624] lg:py-24">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
+              <SectionHeading
+                eyebrow="Our Team"
+                title="Meet the People Behind the Work"
+                align="left"
+              >
+                A focused group of engineers, designers, and strategists
+                committed to building fast, secure, and scalable solutions.
+              </SectionHeading>
+
+              {teamError && (
+                <p className="mb-12 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
+                  {teamError}
+                </p>
+              )}
+            </div>
+
+            <motion.div
+              variants={stagger(0.1)}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.1 }}
+              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {safeTeam.length > 0 ? (
+                safeTeam.map((member) => {
+                  const imageSrc = member?.image || FALLBACK_TEAM_IMAGE;
+                  return (
+                    <motion.div
+                      key={member._id || `${member?.name}-${member?.initials}`}
+                      variants={scaleIn}
+                      whileHover={{ y: -6 }}
+                      className="group overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition dark:border-white/10 dark:bg-white/[0.04]"
+                    >
+                      <div className="relative h-56 w-full bg-slate-100 dark:bg-slate-950">
+                        <img
+                          src={imageSrc}
+                          alt={member?.name || "Team member"}
+                          onError={(e) => {
+                            e.currentTarget.src = FALLBACK_TEAM_IMAGE;
+                          }}
+                          className="h-full w-full object-cover"
+                        />
+
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#1E3A8A]/85 via-[#1E3A8A]/10 to-transparent opacity-80" />
+
+                        <div className="pointer-events-auto absolute right-4 top-4 flex gap-2 opacity-0 transition group-hover:opacity-100">
+                          <IconLink href={member?.socials?.facebook} label="Facebook">
+                            <IconFacebook />
+                          </IconLink>
+                          <IconLink href={member?.socials?.linkedin} label="LinkedIn">
+                            <IconLinkedIn />
+                          </IconLink>
+                          <IconLink href={member?.socials?.twitter} label="Twitter / X">
+                            <IconTwitter />
+                          </IconLink>
+                          <IconLink href={member?.socials?.website} label="Website">
+                            <IconWebsite />
+                          </IconLink>
+                        </div>
+
+                        <div className="absolute bottom-4 left-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-white text-sm font-black text-[#1E3A8A] shadow-lg">
+                          {getInitials(member)}
+                        </div>
+                      </div>
+
+                      <div className="p-6">
+                        <h3 className="text-xl font-bold text-[#1E3A8A] dark:text-white">
+                          {member?.name || "Team Member"}
+                        </h3>
+                        <p className="mt-1 text-sm font-semibold text-[#78a6f2] dark:text-[#7ddfff]">
+                          {member?.title || member?.role || "Role"}
+                        </p>
+                        {member?.bio && (
+                          <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                            {member.bio}
+                          </p>
+                        )}
+                      </div>
+                    </motion.div>
+                  );
+                })
+              ) : (
+                <motion.div
+                  variants={fadeUp}
+                  className="col-span-full rounded-lg border border-slate-200 bg-white p-8 text-center text-slate-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-300"
+                >
+                  <UsersRound className="mx-auto mb-3 h-8 w-8 text-[#78a6f2]" />
+                  No team members found.
+                </motion.div>
+              )}
+            </motion.div>
+          </div>
+        </section> */}
+
+        {/* <OrgChart /> */}
+
+        <section className="relative overflow-hidden bg-[linear-gradient(135deg,#0b1526_0%,#13294b_45%,#2f6faa_100%)] px-6 py-20 text-center text-white lg:py-24">
+          <div className="absolute inset-0 about-grid opacity-50" aria-hidden="true" />
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            className="relative z-10 mx-auto max-w-3xl"
+          >
+            <div className="mx-auto mb-5 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-white/10 text-[#7ddfff] backdrop-blur">
+              <BadgeCheck className="h-6 w-6" />
+            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.26em] text-blue-100">
+              Work With Us
+            </p>
+            <h2 className="text-3xl font-extrabold leading-tight md:text-5xl">
+              Let&apos;s Build Something
+              <br />
+              <span className="about-shimmer about-shimmer-on-dark">Extraordinary</span>
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-blue-50/90 md:text-lg">
+              Whether you are a startup with a vision or an enterprise seeking
+              transformation, Index IT Hub is ready to help shape the next move.
+            </p>
+            <Link
+              href="/contact"
+              className="mt-10 inline-flex items-center gap-2 rounded-lg bg-white px-7 py-4 text-sm font-bold text-[#1E3A8A] shadow-xl shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-blue-50"
+            >
+              Get in Touch
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
+        </section>
+      </main>
     </>
   );
-};
-
-export default AboutPage;
+}
