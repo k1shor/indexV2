@@ -179,3 +179,10 @@ export const isAuthenticated = () => {
   const stored = localStorage.getItem('auth')
   return stored ? JSON.parse(stored).token : false
 }
+
+// ✅ GET PUBLIC TEAM MEMBERS (No token required)
+export const getPublicTeam = () => {
+  return fetch(`${API}/user/team?limit=100`)
+    .then(res => res.json())
+    .catch(err => console.log(err));
+};

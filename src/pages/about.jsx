@@ -24,6 +24,7 @@ import {
 import { getAbout } from "./api/aboutAPI";
 import { getAllUsers } from "./api/userApi";
 import MissionVisionSection from "@/components/MissionVissionSection";
+import TeamMembersSection from "@/components/TeamMembersSection";
 
 const FALLBACK_TEAM_IMAGE = "/team-placeholder.png";
 const BRAND_LOGO = "/image.png";
@@ -144,7 +145,12 @@ function IconLink({ href, label, children }) {
 
 function IconFacebook() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4"
+      fill="currentColor"
+      aria-hidden="true"
+    >
       <path d="M22 12a10 10 0 1 0-11.56 9.87v-6.99H7.9V12h2.54V9.8c0-2.5 1.5-3.89 3.79-3.89 1.1 0 2.25.2 2.25.2v2.46h-1.27c-1.25 0-1.64.77-1.64 1.56V12h2.8l-.45 2.88h-2.35v6.99A10 10 0 0 0 22 12z" />
     </svg>
   );
@@ -152,7 +158,12 @@ function IconFacebook() {
 
 function IconLinkedIn() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4"
+      fill="currentColor"
+      aria-hidden="true"
+    >
       <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5ZM.5 23.5h4V7.98h-4V23.5ZM8 7.98h3.84v2.12h.06c.54-1.02 1.86-2.1 3.84-2.1 4.1 0 4.86 2.7 4.86 6.2v9.3h-4v-8.26c0-1.97-.04-4.5-2.74-4.5-2.75 0-3.17 2.14-3.17 4.36v8.4H8V7.98Z" />
     </svg>
   );
@@ -160,7 +171,12 @@ function IconLinkedIn() {
 
 function IconTwitter() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4"
+      fill="currentColor"
+      aria-hidden="true"
+    >
       <path d="M18.9 2.25h3.37l-7.36 8.41L23.5 21.75h-6.73l-5.27-6.9-6.03 6.9H2.1l7.87-9.0L.5 2.25h6.9l4.76 6.23 5.74-6.23Zm-1.18 17.5h1.87L6.38 4.16H4.38l13.34 15.59Z" />
     </svg>
   );
@@ -168,7 +184,12 @@ function IconTwitter() {
 
 function IconWebsite() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4"
+      fill="currentColor"
+      aria-hidden="true"
+    >
       <path d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2Zm7.93 9h-3.05a15.7 15.7 0 0 0-1.2-5.02A8.03 8.03 0 0 1 19.93 11ZM12 4c.9 0 2.34 1.78 3.05 7H8.95C9.66 5.78 11.1 4 12 4ZM4.07 13h3.05c.18 1.8.63 3.52 1.2 5.02A8.03 8.03 0 0 1 4.07 13Zm3.05-2H4.07a8.03 8.03 0 0 1 4.25-5.02A15.7 15.7 0 0 0 7.12 11Zm1.83 2h6.1c-.7 5.22-2.15 7-3.05 7s-2.35-1.78-3.05-7Zm7.93 0h3.05a8.03 8.03 0 0 1-4.25 5.02c.57-1.5 1.02-3.22 1.2-5.02Z" />
     </svg>
   );
@@ -182,7 +203,9 @@ function SectionHeading({ eyebrow, title, children, align = "center" }) {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.2 }}
-      className={isCentered ? "mx-auto mb-12 max-w-3xl text-center" : "mb-10 max-w-3xl"}
+      className={
+        isCentered ? "mx-auto mb-12 max-w-3xl text-center" : "mb-10 max-w-3xl"
+      }
     >
       <p className="mb-3 text-xs font-semibold uppercase tracking-[0.26em] text-[#78a6f2]">
         {eyebrow}
@@ -259,11 +282,17 @@ function OrgChart() {
 
           <div className="grid gap-4 md:grid-cols-2">
             {management.map((n) => (
-              <motion.div key={n.title} variants={scaleIn} className={chartCard}>
+              <motion.div
+                key={n.title}
+                variants={scaleIn}
+                className={chartCard}
+              >
                 <p className="text-sm font-semibold text-slate-950 dark:text-white">
                   {n.title}
                 </p>
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{n.sub}</p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  {n.sub}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -272,11 +301,17 @@ function OrgChart() {
 
           <div className="grid gap-4 md:grid-cols-4">
             {delivery.map((n) => (
-              <motion.div key={n.title} variants={scaleIn} className={chartCard}>
+              <motion.div
+                key={n.title}
+                variants={scaleIn}
+                className={chartCard}
+              >
                 <p className="text-sm font-semibold text-slate-950 dark:text-white">
                   {n.title}
                 </p>
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{n.sub}</p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  {n.sub}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -296,7 +331,10 @@ export default function AboutPage() {
       try {
         const data = await getAbout();
         if (!data?.error) {
-          setAbout({ description: data.description || "", image: data.image || "" });
+          setAbout({
+            description: data.description || "",
+            image: data.image || "",
+          });
         }
       } catch (error) {
         console.error("Error fetching About:", error);
@@ -307,7 +345,11 @@ export default function AboutPage() {
       setTeamError("");
       try {
         const data = await getAllUsers();
-        const list = Array.isArray(data?.data) ? data.data : Array.isArray(data) ? data : [];
+        const list = Array.isArray(data?.data)
+          ? data.data
+          : Array.isArray(data)
+          ? data
+          : [];
         setTeam(list);
       } catch (e) {
         setTeam([]);
@@ -338,14 +380,26 @@ export default function AboutPage() {
 
       <style jsx global>{`
         .about-grid {
-          background-image:
-            linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+          background-image: linear-gradient(
+              rgba(255, 255, 255, 0.08) 1px,
+              transparent 1px
+            ),
+            linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.08) 1px,
+              transparent 1px
+            );
           background-size: 48px 48px;
         }
 
         .about-shimmer {
-          background: linear-gradient(90deg, #1E3A8A 0%, #78a6f2 42%, #1E3A8A 64%, #78a6f2 100%);
+          background: linear-gradient(
+            90deg,
+            #1e3a8a 0%,
+            #78a6f2 42%,
+            #1e3a8a 64%,
+            #78a6f2 100%
+          );
           background-size: 220% auto;
           -webkit-background-clip: text;
           background-clip: text;
@@ -355,7 +409,13 @@ export default function AboutPage() {
 
         .dark .about-shimmer,
         .about-shimmer-on-dark {
-          background: linear-gradient(90deg, #fefefe 0%, #7ddfff 42%, #fefefe 64%, #7ddfff 100%);
+          background: linear-gradient(
+            90deg,
+            #fefefe 0%,
+            #7ddfff 42%,
+            #fefefe 64%,
+            #7ddfff 100%
+          );
           background-size: 220% auto;
           -webkit-background-clip: text;
           background-clip: text;
@@ -363,7 +423,7 @@ export default function AboutPage() {
         }
 
         .about-copy strong {
-          color: #1E3A8A;
+          color: #1e3a8a;
           font-weight: 800;
         }
 
@@ -383,11 +443,18 @@ export default function AboutPage() {
 
       <main className="bg-white text-slate-900 transition-colors duration-300 dark:bg-[#0d1a2b] dark:text-white">
         <section className="relative overflow-hidden bg-[linear-gradient(135deg,#ffffff_0%,#eef6ff_48%,#dbeafe_100%)] text-slate-950 dark:bg-[linear-gradient(135deg,#0b1526_0%,#13294b_46%,#2f6faa_100%)] dark:text-white">
-          <div className="absolute inset-0 about-grid opacity-60" aria-hidden="true" />
+          <div
+            className="absolute inset-0 about-grid opacity-60"
+            aria-hidden="true"
+          />
           <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white to-transparent dark:from-[#0d1a2b]" />
 
           <div className="relative z-10 mx-auto grid min-h-[88vh] w-full max-w-7xl items-center gap-14 px-6 pb-20 pt-32 lg:grid-cols-[1.08fr_0.92fr] lg:pb-24 lg:pt-36">
-            <motion.div variants={stagger(0.12)} initial="hidden" animate="show">
+            <motion.div
+              variants={stagger(0.12)}
+              initial="hidden"
+              animate="show"
+            >
               <motion.div
                 variants={fadeUp}
                 className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#13294b]/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#1E3A8A] shadow-sm backdrop-blur dark:border-white/15 dark:bg-white/10 dark:text-blue-100"
@@ -416,7 +483,10 @@ export default function AboutPage() {
                 experiences, and growth-focused campaigns.
               </motion.p>
 
-              <motion.div variants={fadeUp} className="mt-10 flex flex-wrap gap-3">
+              <motion.div
+                variants={fadeUp}
+                className="mt-10 flex flex-wrap gap-3"
+              >
                 <Link
                   href="#who-we-are"
                   className="inline-flex items-center gap-2 rounded-lg bg-brand-light px-6 py-3 text-sm font-bold text-slate-50 shadow-xl shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-[#4F96EE] dark:bg-white dark:text-[#1E3A8A] dark:hover:bg-blue-50"
@@ -443,7 +513,11 @@ export default function AboutPage() {
                 <div className="rounded-lg border border-white/80 bg-white/80 p-5 shadow-2xl shadow-slate-950/15 backdrop-blur-md dark:border-white/15 dark:bg-white/[0.08] dark:shadow-blue-950/30">
                   <motion.div
                     animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                    transition={{
+                      duration: 5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                     className="relative mx-auto aspect-square w-full max-w-[330px]"
                   >
                     <Image
@@ -461,12 +535,20 @@ export default function AboutPage() {
 
                 <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
                   <div className="rounded-lg border border-[#13294b]/10 bg-white/70 px-4 py-3 backdrop-blur dark:border-white/15 dark:bg-white/10">
-                    <p className="font-bold text-[#1E3A8A] dark:text-white">Design</p>
-                    <p className="mt-1 text-xs text-slate-600 dark:text-blue-100">Useful, clear, premium</p>
+                    <p className="font-bold text-[#1E3A8A] dark:text-white">
+                      Design
+                    </p>
+                    <p className="mt-1 text-xs text-slate-600 dark:text-blue-100">
+                      Useful, clear, premium
+                    </p>
                   </div>
                   <div className="rounded-lg border border-[#13294b]/10 bg-white/70 px-4 py-3 backdrop-blur dark:border-white/15 dark:bg-white/10">
-                    <p className="font-bold text-[#1E3A8A] dark:text-white">Delivery</p>
-                    <p className="mt-1 text-xs text-slate-600 dark:text-blue-100">Fast, scalable, steady</p>
+                    <p className="font-bold text-[#1E3A8A] dark:text-white">
+                      Delivery
+                    </p>
+                    <p className="mt-1 text-xs text-slate-600 dark:text-blue-100">
+                      Fast, scalable, steady
+                    </p>
                   </div>
                 </div>
               </div>
@@ -474,7 +556,10 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section id="who-we-are" className="bg-white py-20 dark:bg-[#0d1a2b] lg:py-24">
+        <section
+          id="who-we-are"
+          className="bg-white py-20 dark:bg-[#0d1a2b] lg:py-24"
+        >
           <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 lg:grid-cols-[0.94fr_1.06fr]">
             <motion.div
               variants={fadeLeft}
@@ -528,7 +613,10 @@ export default function AboutPage() {
                 ))}
               </motion.div>
 
-              <motion.div variants={fadeUp} className="mt-8 grid gap-3 sm:grid-cols-2">
+              <motion.div
+                variants={fadeUp}
+                className="mt-8 grid gap-3 sm:grid-cols-2"
+              >
                 {CAPABILITIES.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -694,7 +782,10 @@ export default function AboutPage() {
         {/* <OrgChart /> */}
 
         <section className="relative overflow-hidden bg-[linear-gradient(135deg,#0b1526_0%,#13294b_45%,#2f6faa_100%)] px-6 py-20 text-center text-white lg:py-24">
-          <div className="absolute inset-0 about-grid opacity-50" aria-hidden="true" />
+          <div
+            className="absolute inset-0 about-grid opacity-50"
+            aria-hidden="true"
+          />
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -711,7 +802,9 @@ export default function AboutPage() {
             <h2 className="text-3xl font-extrabold leading-tight md:text-5xl">
               Let&apos;s Build Something
               <br />
-              <span className="about-shimmer about-shimmer-on-dark">Extraordinary</span>
+              <span className="about-shimmer about-shimmer-on-dark">
+                Extraordinary
+              </span>
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-blue-50/90 md:text-lg">
               Whether you are a startup with a vision or an enterprise seeking
@@ -726,6 +819,14 @@ export default function AboutPage() {
             </Link>
           </motion.div>
         </section>
+
+        <TeamMembersSection />
+
+        {/* OrgChart if uncommented */}
+        {/* <OrgChart /> */}
+
+        {/* Let's Build Something Extraordinary CTA Section */}
+        <section className="relative overflow-hidden ...">...</section>
       </main>
     </>
   );
