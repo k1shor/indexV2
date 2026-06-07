@@ -820,7 +820,7 @@ export default function AboutPage() {
           </motion.div>
         </section>
 
-        <TeamMembersSection />
+        {/* <TeamMembersSection /> */}
 
         {/* OrgChart if uncommented */}
         {/* <OrgChart /> */}
