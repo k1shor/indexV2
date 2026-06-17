@@ -21,9 +21,9 @@ import {
   UsersRound,
   Zap,
 } from "lucide-react";
-import { getAbout } from "./api/aboutAPI";
-import { getAllUsers } from "./api/userApi";
+import { getAbout } from "@/pages/api/aboutAPI";
 import MissionVisionSection from "@/components/MissionVissionSection";
+import { getAllUsers, getPublicTeam } from "@/pages/api/userApi";
 import TeamMembersSection from "@/components/TeamMembersSection";
 
 const FALLBACK_TEAM_IMAGE = "/team-placeholder.png";
@@ -330,7 +330,7 @@ export default function AboutPage() {
     const fetchAbout = async () => {
       try {
         const data = await getAbout();
-        if (!data?.error) {
+        if (data && !data.error) {
           setAbout({
             description: data.description || "",
             image: data.image || "",
@@ -344,7 +344,7 @@ export default function AboutPage() {
     const fetchTeam = async () => {
       setTeamError("");
       try {
-        const data = await getAllUsers();
+        const data = await getPublicTeam();
         const list = Array.isArray(data?.data)
           ? data.data
           : Array.isArray(data)
@@ -489,7 +489,7 @@ export default function AboutPage() {
               >
                 <Link
                   href="#who-we-are"
-                  className="inline-flex items-center gap-2 rounded-lg bg-brand-light px-6 py-3 text-sm font-bold text-slate-50 shadow-xl shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-[#4F96EE] dark:bg-white dark:text-[#1E3A8A] dark:hover:bg-blue-50"
+                  className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-bold text-slate-50 shadow-xl shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-blue-500 dark:bg-white dark:text-[#1E3A8A] dark:hover:bg-blue-50"
                 >
                   Our Story
                   <ArrowRight className="h-4 w-4" />
@@ -524,8 +524,6 @@ export default function AboutPage() {
                       src={BRAND_LOGO}
                       alt="Index IT Hub logo"
                       fill
-                      // width={'300'}
-                      // height={'300'}
                       priority
                       sizes="(max-width: 1024px) 280px, 330px"
                       className=" object-cover shadow-2xl"
@@ -569,11 +567,12 @@ export default function AboutPage() {
               className="order-2 lg:order-1"
             >
               <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-2xl shadow-slate-200/70 dark:border-white/10 dark:bg-white/[0.04] dark:shadow-black/30">
-                <div className="aspect-[4/3]">
-                  <img
+                <div className="aspect-[4/3] relative w-full h-full min-h-[300px]">
+                  <Image
                     src={storyImage}
                     alt="Index IT Hub team and brand"
-                    className="h-full w-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 </div>
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1E3A8A]/95 to-transparent px-6 pb-6 pt-16">
@@ -820,13 +819,10 @@ export default function AboutPage() {
           </motion.div>
         </section>
 
-        {/* <TeamMembersSection /> */}
+        <TeamMembersSection />
 
         {/* OrgChart if uncommented */}
-        {/* <OrgChart /> */}
-
-        {/* Let's Build Something Extraordinary CTA Section */}
-        <section className="relative overflow-hidden ...">...</section>
+        <OrgChart />
       </main>
     </>
   );
