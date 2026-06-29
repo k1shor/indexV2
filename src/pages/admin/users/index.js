@@ -50,7 +50,10 @@ const getAuthHeaders = (contentType = "application/json") => {
   const headers = {};
 
   if (contentType) headers["Content-Type"] = contentType;
-  if (token) headers.Authorization = token.startsWith("Bearer ") ? token : `Bearer ${token}`;
+  if (token)
+    headers.Authorization = token.startsWith("Bearer ")
+      ? token
+      : `Bearer ${token}`;
 
   return headers;
 };
@@ -67,7 +70,11 @@ const requestJson = async (url, options = {}) => {
 };
 
 const getInitials = (user) => {
-  const name = `${user.firstname || ""} ${user.lastname || ""}`.trim() || user.username || user.email || "U";
+  const name =
+    `${user.firstname || ""} ${user.lastname || ""}`.trim() ||
+    user.username ||
+    user.email ||
+    "U";
   return name
     .split(" ")
     .filter(Boolean)
@@ -104,7 +111,12 @@ const mapUserToForm = (user) => ({
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
   const [stats, setStats] = useState(emptyStats);
-  const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 10, pages: 1 });
+  const [pagination, setPagination] = useState({
+    total: 0,
+    page: 1,
+    limit: 10,
+    pages: 1,
+  });
   const [search, setSearch] = useState("");
   const [activeSearch, setActiveSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -115,11 +127,13 @@ export default function AdminUsersPage() {
   const [error, setError] = useState("");
   const [editingUser, setEditingUser] = useState(null);
   const [editForm, setEditForm] = useState(null);
+  const [editImage, setEditImage] = useState(null); // { file: File, preview: string }
 
   const totalPages = pagination.pages || 1;
 
   const visibleStats = useMemo(() => {
-    if (stats.total || stats.verified || stats.admins || stats.pending) return stats;
+    if (stats.total || stats.verified || stats.admins || stats.pending)
+      return stats;
 
     return users.reduce(
       (summary, user) => ({
@@ -143,20 +157,25 @@ export default function AdminUsersPage() {
         limit: String(limit),
       });
 
-      const data = await requestJson(`${API}/user/getallusers?${params.toString()}`, {
-        headers: getAuthHeaders(null),
-      });
+      const data = await requestJson(
+        `${API}/user/getallusers?${params.toString()}`,
+        {
+          headers: getAuthHeaders(null),
+        }
+      );
 
       const list = Array.isArray(data.users)
         ? data.users
         : Array.isArray(data.data)
-          ? data.data
-          : Array.isArray(data)
-            ? data
-            : [];
+        ? data.data
+        : Array.isArray(data)
+        ? data
+        : [];
 
       setUsers(list);
-      setPagination(data.pagination || { total: list.length, page, limit, pages: 1 });
+      setPagination(
+        data.pagination || { total: list.length, page, limit, pages: 1 }
+      );
       setStats(data.stats || emptyStats);
     } catch (err) {
       setUsers([]);
@@ -176,7 +195,9 @@ export default function AdminUsersPage() {
   };
 
   const updateUserInList = (updatedUser) => {
-    setUsers((current) => current.map((user) => (user._id === updatedUser._id ? updatedUser : user)));
+    setUsers((current) =>
+      current.map((user) => (user._id === updatedUser._id ? updatedUser : user))
+    );
   };
 
   const handleSearch = (event) => {
@@ -195,7 +216,9 @@ export default function AdminUsersPage() {
     const nextRole = Number(role);
     if (nextRole === Number(user.role)) return;
 
-    const confirmed = window.confirm(`Change ${user.username || user.email} to ${roleLabels[nextRole]}?`);
+    const confirmed = window.confirm(
+      `Change ${user.username || user.email} to ${roleLabels[nextRole]}?`
+    );
     if (!confirmed) return;
 
     setWorkingId(user._id);
@@ -223,10 +246,13 @@ export default function AdminUsersPage() {
     setStatus("");
 
     try {
-      const updated = await requestJson(`${API}/user/verifyuserbyadmin/${user._id}`, {
-        method: "PUT",
-        headers: getAuthHeaders(null),
-      });
+      const updated = await requestJson(
+        `${API}/user/verifyuserbyadmin/${user._id}`,
+        {
+          method: "PUT",
+          headers: getAuthHeaders(null),
+        }
+      );
 
       updateUserInList(updated.user || updated);
       setStatus("User verified.");
@@ -239,7 +265,9 @@ export default function AdminUsersPage() {
   };
 
   const handleDelete = async (user) => {
-    const confirmed = window.confirm(`Delete ${user.username || user.email}? This cannot be undone.`);
+    const confirmed = window.confirm(
+      `Delete ${user.username || user.email}? This cannot be undone.`
+    );
     if (!confirmed) return;
 
     setWorkingId(user._id);
@@ -269,6 +297,8 @@ export default function AdminUsersPage() {
   const closeEdit = () => {
     setEditingUser(null);
     setEditForm(null);
+    if (editImage?.preview) URL.revokeObjectURL(editImage.preview);
+    setEditImage(null);
   };
 
   const handleEditChange = (field, value) => {
@@ -290,7 +320,10 @@ export default function AdminUsersPage() {
         email: editForm.email.trim(),
         gender: editForm.gender || undefined,
         age: editForm.age === "" ? undefined : Number(editForm.age),
-        phonenumber: editForm.phonenumber === "" ? undefined : Number(editForm.phonenumber),
+        phonenumber:
+          editForm.phonenumber === ""
+            ? undefined
+            : Number(editForm.phonenumber),
         position: editForm.position.trim(),
         about: editForm.about.trim(),
         address: {
@@ -302,11 +335,36 @@ export default function AdminUsersPage() {
         },
       };
 
-      const data = await requestJson(`${API}/user/updateuser/${editingUser._id}`, {
-        method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
-      });
+      let body;
+      let headers;
+
+      if (editImage?.file) {
+        // Use FormData so the image is sent as multipart
+        const fd = new FormData();
+        fd.append("image", editImage.file);
+        Object.entries(payload).forEach(([key, value]) => {
+          if (value !== undefined) {
+            fd.append(
+              key,
+              typeof value === "object" ? JSON.stringify(value) : value
+            );
+          }
+        });
+        body = fd;
+        headers = getAuthHeaders(null); // no Content-Type — let browser set multipart boundary
+      } else {
+        body = JSON.stringify(payload);
+        headers = getAuthHeaders();
+      }
+
+      const data = await requestJson(
+        `${API}/user/updateuser/${editingUser._id}`,
+        {
+          method: "PUT",
+          headers,
+          body,
+        }
+      );
 
       updateUserInList(data.user || data);
       setStatus("User profile updated.");
@@ -331,7 +389,10 @@ export default function AdminUsersPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSearch} className="flex w-full flex-col gap-2 sm:flex-row lg:max-w-xl">
+        <form
+          onSubmit={handleSearch}
+          className="flex w-full flex-col gap-2 sm:flex-row lg:max-w-xl"
+        >
           <label className="relative flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <input
@@ -366,9 +427,14 @@ export default function AdminUsersPage() {
           ["Admins", visibleStats.admins, ShieldCheck],
           ["Pending", visibleStats.pending, UserCheck],
         ].map(([label, value, Icon]) => (
-          <div key={label} className="rounded-lg border border-gray-200 px-4 py-3 dark:border-gray-700">
+          <div
+            key={label}
+            className="rounded-lg border border-gray-200 px-4 py-3 dark:border-gray-700"
+          >
             <div className="flex items-center justify-between gap-3">
-              <span className="text-sm text-gray-600 dark:text-gray-300">{label}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                {label}
+              </span>
               <Icon className="h-4 w-4 text-brand-light dark:text-blue-400" />
             </div>
             <div className="mt-2 text-2xl font-bold tabular-nums">{value}</div>
@@ -392,15 +458,22 @@ export default function AdminUsersPage() {
         <table className="min-w-full table-auto border-collapse text-left text-sm">
           <thead className="bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-100">
             <tr>
-              {['User', 'Contact', 'Role', 'Status', 'Joined', 'Actions'].map((heading) => (
-                <th key={heading} className="px-4 py-3 font-semibold">{heading}</th>
-              ))}
+              {["User", "Contact", "Role", "Status", "Joined", "Actions"].map(
+                (heading) => (
+                  <th key={heading} className="px-4 py-3 font-semibold">
+                    {heading}
+                  </th>
+                )
+              )}
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {loading ? (
               <tr>
-                <td colSpan="6" className="px-4 py-10 text-center text-gray-500 dark:text-gray-300">
+                <td
+                  colSpan="6"
+                  className="px-4 py-10 text-center text-gray-500 dark:text-gray-300"
+                >
                   <span className="inline-flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Loading users...
@@ -409,17 +482,27 @@ export default function AdminUsersPage() {
               </tr>
             ) : users.length === 0 ? (
               <tr>
-                <td colSpan="6" className="px-4 py-10 text-center text-gray-500 dark:text-gray-300">
+                <td
+                  colSpan="6"
+                  className="px-4 py-10 text-center text-gray-500 dark:text-gray-300"
+                >
                   No users found.
                 </td>
               </tr>
             ) : (
               users.map((user) => (
-                <tr key={user._id} className="transition hover:bg-gray-50 dark:hover:bg-gray-800">
+                <tr
+                  key={user._id}
+                  className="transition hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       {user.image ? (
-                        <img src={user.image} alt="" className="h-11 w-11 rounded-full object-cover" />
+                        <img
+                          src={user.image}
+                          alt=""
+                          className="h-11 w-11 rounded-full object-cover"
+                        />
                       ) : (
                         <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#78a6f2]/15 font-semibold text-brand-light dark:bg-blue-900/50 dark:text-blue-200">
                           {getInitials(user)}
@@ -427,20 +510,30 @@ export default function AdminUsersPage() {
                       )}
                       <div className="min-w-0">
                         <div className="font-semibold text-gray-900 dark:text-gray-100">
-                          {[user.firstname, user.lastname].filter(Boolean).join(" ") || user.username || "Unnamed user"}
+                          {[user.firstname, user.lastname]
+                            .filter(Boolean)
+                            .join(" ") ||
+                            user.username ||
+                            "Unnamed user"}
                         </div>
-                        <div className="truncate text-xs text-gray-500 dark:text-gray-400">@{user.username || "user"}</div>
+                        <div className="truncate text-xs text-gray-500 dark:text-gray-400">
+                          @{user.username || "user"}
+                        </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-4 py-3">
                     <div>{user.email}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">{user.phonenumber || user.position || "-"}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      {user.phonenumber || user.position || "-"}
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     <select
                       value={Number(user.role || 0)}
-                      onChange={(event) => handleRoleChange(user, event.target.value)}
+                      onChange={(event) =>
+                        handleRoleChange(user, event.target.value)
+                      }
                       disabled={workingId === user._id}
                       className="min-h-10 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-brand-light dark:border-gray-600 dark:bg-gray-900"
                     >
@@ -460,7 +553,9 @@ export default function AdminUsersPage() {
                       {user.isVerified ? "Verified" : "Pending"}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{formatDate(user.createdAt)}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">
+                    {formatDate(user.createdAt)}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap items-center gap-2">
                       {!user.isVerified && (
@@ -502,7 +597,8 @@ export default function AdminUsersPage() {
 
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="text-sm text-gray-600 dark:text-gray-300">
-          Showing page {pagination.page || page} of {totalPages} ({pagination.total || users.length} users)
+          Showing page {pagination.page || page} of {totalPages} (
+          {pagination.total || users.length} users)
         </div>
         <div className="flex items-center gap-2">
           <select
@@ -528,7 +624,9 @@ export default function AdminUsersPage() {
           </button>
           <button
             type="button"
-            onClick={() => setPage((current) => Math.min(current + 1, totalPages))}
+            onClick={() =>
+              setPage((current) => Math.min(current + 1, totalPages))
+            }
             disabled={page >= totalPages || loading}
             className="inline-flex min-h-10 items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium transition hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:hover:bg-gray-700"
           >
@@ -547,7 +645,9 @@ export default function AdminUsersPage() {
             <div className="flex items-start justify-between gap-4 border-b border-gray-200 pb-4 dark:border-gray-700">
               <div>
                 <h2 className="text-xl font-bold">Edit User</h2>
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">Update profile details for {editingUser.email}.</p>
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                  Update profile details for {editingUser.email}.
+                </p>
               </div>
               <button
                 type="button"
@@ -560,6 +660,66 @@ export default function AdminUsersPage() {
             </div>
 
             <div className="mt-5 grid gap-4 md:grid-cols-2">
+              {/* ── Profile image upload ── */}
+              <div className="md:col-span-2">
+                <span className="block text-sm font-medium">Profile image</span>
+                <div className="mt-2 flex items-center gap-4">
+                  {/* Preview: new file takes priority, then existing image, then initials */}
+                  {editImage?.preview ? (
+                    <img
+                      src={editImage.preview}
+                      alt="Preview"
+                      className="h-16 w-16 rounded-full object-cover ring-2 ring-brand-light"
+                    />
+                  ) : editingUser.image ? (
+                    <img
+                      src={editingUser.image}
+                      alt="Current"
+                      className="h-16 w-16 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#78a6f2]/15 text-lg font-semibold text-brand-light dark:bg-blue-900/50 dark:text-blue-200">
+                      {getInitials(editingUser)}
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium transition hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="sr-only"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          if (editImage?.preview)
+                            URL.revokeObjectURL(editImage.preview);
+                          setEditImage({
+                            file,
+                            preview: URL.createObjectURL(file),
+                          });
+                        }}
+                      />
+                      Choose image
+                    </label>
+                    {editImage && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          URL.revokeObjectURL(editImage.preview);
+                          setEditImage(null);
+                        }}
+                        className="text-xs text-red-500 hover:underline"
+                      >
+                        Remove selection
+                      </button>
+                    )}
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      JPG, PNG or WebP · max 5 MB
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               {[
                 ["firstname", "First name"],
                 ["lastname", "Last name"],
@@ -574,8 +734,16 @@ export default function AdminUsersPage() {
                   <span>{label}</span>
                   <input
                     value={editForm[field]}
-                    onChange={(event) => handleEditChange(field, event.target.value)}
-                    type={field === "email" ? "email" : field === "age" || field === "phonenumber" ? "number" : "text"}
+                    onChange={(event) =>
+                      handleEditChange(field, event.target.value)
+                    }
+                    type={
+                      field === "email"
+                        ? "email"
+                        : field === "age" || field === "phonenumber"
+                        ? "number"
+                        : "text"
+                    }
                     className="min-h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 outline-none transition focus:border-brand-light dark:border-gray-600 dark:bg-gray-950"
                   />
                 </label>
@@ -585,7 +753,9 @@ export default function AdminUsersPage() {
                 <span>Gender</span>
                 <select
                   value={editForm.gender}
-                  onChange={(event) => handleEditChange("gender", event.target.value)}
+                  onChange={(event) =>
+                    handleEditChange("gender", event.target.value)
+                  }
                   className="min-h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 outline-none transition focus:border-brand-light dark:border-gray-600 dark:bg-gray-950"
                 >
                   <option value="">Not set</option>
@@ -599,7 +769,9 @@ export default function AdminUsersPage() {
                 <span>Temporary addresses</span>
                 <input
                   value={editForm.tempAddress}
-                  onChange={(event) => handleEditChange("tempAddress", event.target.value)}
+                  onChange={(event) =>
+                    handleEditChange("tempAddress", event.target.value)
+                  }
                   placeholder="Separate multiple addresses with commas"
                   className="min-h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 outline-none transition focus:border-brand-light dark:border-gray-600 dark:bg-gray-950"
                 />
@@ -609,7 +781,9 @@ export default function AdminUsersPage() {
                 <span>About</span>
                 <textarea
                   value={editForm.about}
-                  onChange={(event) => handleEditChange("about", event.target.value)}
+                  onChange={(event) =>
+                    handleEditChange("about", event.target.value)
+                  }
                   rows={4}
                   className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 outline-none transition focus:border-brand-light dark:border-gray-600 dark:bg-gray-950"
                 />
@@ -629,7 +803,9 @@ export default function AdminUsersPage() {
                 disabled={workingId === editingUser._id}
                 className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-brand-light px-4 py-2 font-medium text-slate-950 transition hover:bg-[#4F96EE] disabled:opacity-60 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-600"
               >
-                {workingId === editingUser._id && <Loader2 className="h-4 w-4 animate-spin" />}
+                {workingId === editingUser._id && (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                )}
                 Save Changes
               </button>
             </div>

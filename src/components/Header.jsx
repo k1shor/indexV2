@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowRight, Mail, Menu, Moon, Sun, X } from "lucide-react";
+import { ArrowRight, LogOut, Mail, Menu, Moon, Sun, X } from "lucide-react";
 import {
   IoLogoFacebook,
   IoLogoInstagram,
@@ -28,14 +28,50 @@ const socials = [
 
 const Header = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState("light");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "light";
     setTheme(savedTheme);
     document.documentElement.classList.toggle("dark", savedTheme === "dark");
   }, []);
+
+  // Read logged-in user from localStorage — runs on mount AND after login/logout
+  const syncUser = () => {
+    const stored = localStorage.getItem("auth");
+    if (!stored || stored === "undefined" || stored === "null") {
+      setUser(null);
+      return;
+    }
+    try {
+      const parsed = JSON.parse(stored);
+      setUser(parsed.user || null);
+    } catch {
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    syncUser(); 
+
+    window.addEventListener("authChange", syncUser);
+    window.addEventListener("storage", syncUser);
+
+    return () => {
+      window.removeEventListener("authChange", syncUser);
+      window.removeEventListener("storage", syncUser);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth");
+    setUser(null);
+    setMenuOpen(false);
+    router.push("/");
+  };
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -98,18 +134,55 @@ const Header = () => {
             type="button"
             onClick={toggleTheme}
             className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/75 text-[#1E3A8A] shadow-sm ring-1 ring-white/50 transition hover:bg-white hover:shadow-md dark:bg-white/10 dark:text-slate-50 dark:ring-white/10 dark:hover:bg-white/15"
-            aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
+            aria-label={
+              theme === "light"
+                ? "Switch to dark theme"
+                : "Switch to light theme"
+            }
           >
-            {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+            {theme === "light" ? (
+              <Moon className="h-5 w-5" />
+            ) : (
+              <Sun className="h-5 w-5" />
+            )}
           </button>
 
-          <Link
-            href="/contact"
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#78a6f2] px-5 py-2 text-sm font-bold text-white shadow-lg shadow-[#13294b]/20 transition hover:-translate-y-0.5 hover:bg-slate-950 dark:bg-brand-light dark:text-slate-50 dark:hover:bg-[#4F96EE]"
-          >
-            Let&apos;s Talk
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-3">
+              {/* User avatar / name pill */}
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/75 px-4 py-2 text-sm font-semibold text-[#1E3A8A] shadow-sm ring-1 ring-white/50 dark:bg-white/10 dark:text-slate-100 dark:ring-white/10">
+                {user.image ? (
+                  <img
+                    src={user.image}
+                    alt={user.username}
+                    className="h-6 w-6 rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1E3A8A] text-[10px] font-black text-white dark:bg-[#78a6f2]">
+                    {user.username?.[0]?.toUpperCase() || "U"}
+                  </span>
+                )}
+                <span className="max-w-[100px] truncate">{user.username}</span>
+              </div>
+              {/* Logout button */}
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-red-50 text-red-500 shadow-sm ring-1 ring-red-100 transition hover:bg-red-500 hover:text-white hover:shadow-md dark:bg-red-500/10 dark:text-red-400 dark:ring-red-500/20 dark:hover:bg-red-500 dark:hover:text-white"
+                aria-label="Log out"
+              >
+                <LogOut className="h-4.5 w-4.5" />
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/contact"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#78a6f2] px-5 py-2 text-sm font-bold text-white shadow-lg shadow-[#13294b]/20 transition hover:-translate-y-0.5 hover:bg-slate-950 dark:bg-brand-light dark:text-slate-50 dark:hover:bg-[#4F96EE]"
+            >
+              Let&apos;s Talk
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
         </div>
 
         <div className="flex items-center lg:hidden">
@@ -138,9 +211,20 @@ const Header = () => {
         }`}
       >
         <div className="flex items-center justify-between gap-4 border-b border-[#13294b]/15 pb-4 dark:border-white/10">
-          <Link href="/" aria-label="Index IT Hub home" onClick={() => setMenuOpen(false)}>
+          <Link
+            href="/"
+            aria-label="Index IT Hub home"
+            onClick={() => setMenuOpen(false)}
+          >
             <span className="inline-flex rounded-xl bg-transparent dark:border dark:border-[#9fe6ff]/70 dark:bg-[#f8fcff]/95 dark:px-3 dark:py-2 dark:shadow-[0_18px_42px_rgba(0,185,255,0.18)] dark:ring-1 dark:ring-white/60">
-              <Image src="/indexithub-logo.png" alt="Index IT Hub" width={500} height={120} priority className="h-auto w-[188px] drop-shadow-[0_10px_22px_rgba(30,58,138,0.16)] dark:drop-shadow-[0_10px_22px_rgba(0,185,255,0.18)]" />
+              <Image
+                src="/indexithub-logo.png"
+                alt="Index IT Hub"
+                width={500}
+                height={120}
+                priority
+                className="h-auto w-[188px] drop-shadow-[0_10px_22px_rgba(30,58,138,0.16)] dark:drop-shadow-[0_10px_22px_rgba(0,185,255,0.18)]"
+              />
             </span>
           </Link>
           <button
@@ -175,21 +259,56 @@ const Header = () => {
           type="button"
           onClick={toggleTheme}
           className="mt-6 flex min-h-12 items-center justify-between rounded-lg bg-white/35 px-4 text-sm font-bold ring-1 ring-white/25 transition hover:bg-white/50 dark:bg-white/10 dark:ring-white/10"
-          aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
+          aria-label={
+            theme === "light" ? "Switch to dark theme" : "Switch to light theme"
+          }
         >
           <span>{theme === "light" ? "Dark mode" : "Light mode"}</span>
-          {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5 text-yellow-300" />}
+          {theme === "light" ? (
+            <Moon className="h-5 w-5" />
+          ) : (
+            <Sun className="h-5 w-5 text-yellow-300" />
+          )}
         </button>
 
         <div className="mt-auto border-t border-[#13294b]/15 pt-5 dark:border-white/10">
-          <Link
-            href="/contact"
-            onClick={() => setMenuOpen(false)}
-            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#13294b] px-5 py-3 font-bold text-white shadow-lg shadow-[#13294b]/20 transition hover:bg-slate-950 dark:bg-brand-light dark:text-slate-950"
-          >
-            Start a Project
-            <Mail className="h-4 w-4" />
-          </Link>
+          {user ? (
+            <div className="mb-3 flex items-center justify-between gap-3 rounded-lg bg-white/35 px-4 py-3 ring-1 ring-white/25 dark:bg-white/10 dark:ring-white/10">
+              <div className="flex items-center gap-2.5 overflow-hidden">
+                {user.image ? (
+                  <img
+                    src={user.image}
+                    alt={user.username}
+                    className="h-8 w-8 flex-shrink-0 rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#1E3A8A] text-xs font-black text-white dark:bg-[#78a6f2]">
+                    {user.username?.[0]?.toUpperCase() || "U"}
+                  </span>
+                )}
+                <span className="truncate text-sm font-bold text-[#1E3A8A] dark:text-white">
+                  {user.username}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-500 transition hover:bg-red-500 hover:text-white dark:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500 dark:hover:text-white"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/contact"
+              onClick={() => setMenuOpen(false)}
+              className="mb-3 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#13294b] px-5 py-3 font-bold text-white shadow-lg shadow-[#13294b]/20 transition hover:bg-slate-950 dark:bg-brand-light dark:text-slate-950"
+            >
+              Start a Project
+              <Mail className="h-4 w-4" />
+            </Link>
+          )}
 
           <div className="mt-5 flex items-center justify-center gap-4 text-2xl">
             {socials.map(([href, label, Icon]) => (
