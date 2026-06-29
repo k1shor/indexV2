@@ -725,7 +725,7 @@ export default function AboutPage() {
         <TeamMembersSection />
 
         {/* OrgChart if uncommented */}
-        <OrgChart />
+        {/* <OrgChart /> */}
       </main>
     </>
   );
