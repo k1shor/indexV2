@@ -182,7 +182,7 @@ export const isAuthenticated = () => {
 
 // ✅ GET PUBLIC TEAM MEMBERS (No token required)
 export const getPublicTeam = () => {
-  return fetch(`${API}/user/team?limit=100`)
+  return fetch(`${API}/team/public?limit=100`)
     .then(res => res.json())
     .catch(err => console.log(err));
 };

@@ -682,104 +682,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* <section className="bg-slate-50 py-20 dark:bg-[#0b1624] lg:py-24">
-          <div className="mx-auto max-w-7xl px-6">
-            <div className="grid items-end gap-8 lg:grid-cols-[1fr_auto]">
-              <SectionHeading
-                eyebrow="Our Team"
-                title="Meet the People Behind the Work"
-                align="left"
-              >
-                A focused group of engineers, designers, and strategists
-                committed to building fast, secure, and scalable solutions.
-              </SectionHeading>
-
-              {teamError && (
-                <p className="mb-12 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
-                  {teamError}
-                </p>
-              )}
-            </div>
-
-            <motion.div
-              variants={stagger(0.1)}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.1 }}
-              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-            >
-              {safeTeam.length > 0 ? (
-                safeTeam.map((member) => {
-                  const imageSrc = member?.image || FALLBACK_TEAM_IMAGE;
-                  return (
-                    <motion.div
-                      key={member._id || `${member?.name}-${member?.initials}`}
-                      variants={scaleIn}
-                      whileHover={{ y: -6 }}
-                      className="group overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition dark:border-white/10 dark:bg-white/[0.04]"
-                    >
-                      <div className="relative h-56 w-full bg-slate-100 dark:bg-slate-950">
-                        <img
-                          src={imageSrc}
-                          alt={member?.name || "Team member"}
-                          onError={(e) => {
-                            e.currentTarget.src = FALLBACK_TEAM_IMAGE;
-                          }}
-                          className="h-full w-full object-cover"
-                        />
-
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#1E3A8A]/85 via-[#1E3A8A]/10 to-transparent opacity-80" />
-
-                        <div className="pointer-events-auto absolute right-4 top-4 flex gap-2 opacity-0 transition group-hover:opacity-100">
-                          <IconLink href={member?.socials?.facebook} label="Facebook">
-                            <IconFacebook />
-                          </IconLink>
-                          <IconLink href={member?.socials?.linkedin} label="LinkedIn">
-                            <IconLinkedIn />
-                          </IconLink>
-                          <IconLink href={member?.socials?.twitter} label="Twitter / X">
-                            <IconTwitter />
-                          </IconLink>
-                          <IconLink href={member?.socials?.website} label="Website">
-                            <IconWebsite />
-                          </IconLink>
-                        </div>
-
-                        <div className="absolute bottom-4 left-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-white text-sm font-black text-[#1E3A8A] shadow-lg">
-                          {getInitials(member)}
-                        </div>
-                      </div>
-
-                      <div className="p-6">
-                        <h3 className="text-xl font-bold text-[#1E3A8A] dark:text-white">
-                          {member?.name || "Team Member"}
-                        </h3>
-                        <p className="mt-1 text-sm font-semibold text-[#78a6f2] dark:text-[#7ddfff]">
-                          {member?.title || member?.role || "Role"}
-                        </p>
-                        {member?.bio && (
-                          <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">
-                            {member.bio}
-                          </p>
-                        )}
-                      </div>
-                    </motion.div>
-                  );
-                })
-              ) : (
-                <motion.div
-                  variants={fadeUp}
-                  className="col-span-full rounded-lg border border-slate-200 bg-white p-8 text-center text-slate-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-300"
-                >
-                  <UsersRound className="mx-auto mb-3 h-8 w-8 text-[#78a6f2]" />
-                  No team members found.
-                </motion.div>
-              )}
-            </motion.div>
-          </div>
-        </section> */}
-
-        {/* <OrgChart /> */}
+       
 
         <section className="relative overflow-hidden bg-[linear-gradient(135deg,#0b1526_0%,#13294b_45%,#2f6faa_100%)] px-6 py-20 text-center text-white lg:py-24">
           <div
@@ -820,7 +723,7 @@ export default function AboutPage() {
           </motion.div>
         </section>
 
-        {/* <TeamMembersSection /> */}
+        <TeamMembersSection />
 
         {/* OrgChart if uncommented */}
         {/* <OrgChart /> */}

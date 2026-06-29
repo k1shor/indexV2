@@ -15,7 +15,7 @@
     "aos": "^2.3.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.4.3",
+    "framer-motion": "^12.42.0",
     "heroicons": "^2.2.0",
     "jodit": "^4.7.9",
     "jodit-react": "^5.2.38",

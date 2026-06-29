@@ -167,7 +167,7 @@ export default function TeamMembersSection() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.26em] text-[#78a6f2]">
-              Our Team
+              Our Teams
             </p>
             <h2 className="text-3xl font-extrabold leading-tight text-[#1E3A8A] dark:text-white md:text-5xl">
               Meet the People Behind the Work
